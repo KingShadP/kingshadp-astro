@@ -1,50 +1,436 @@
 ---
-import BaseHead from '../components/BaseHead.astro';
-import Header from '../components/Header.astro';
-import Footer from '../components/Footer.astro';
-import { SITE_TITLE, SITE_DESCRIPTION } from '../consts';
+import BaseHead from "../components/BaseHead.astro";
+import { SITE_DESCRIPTION, SITE_TITLE } from "../consts";
+import { bootMessages, rooms, site } from "../data/livingArchive";
+
+const firstRoom = rooms[0];
+const firstScene = firstRoom.scenes[0];
+const archivePayload = JSON.stringify({ site, rooms, bootMessages });
 ---
 
 <!doctype html>
 <html lang="en">
 	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} />
+		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} image="/images/signature-background.png" />
 	</head>
 	<body>
-		<Header />
-		<main>
-			<h1>🧑‍🚀 Hello, Astronaut!</h1>
-			<p>
-				Welcome to the official <a href="https://astro.build/">Astro</a> blog starter template. This
-				template serves as a lightweight, minimally-styled starting point for anyone looking to build
-				a personal website, blog, or portfolio with Astro.
-			</p>
-			<p>
-				This template comes with a few integrations already configured in your
-				<code>astro.config.mjs</code> file. You can customize your setup with
-				<a href="https://astro.build/integrations">Astro Integrations</a> to add tools like Tailwind,
-				React, or Vue to your project.
-			</p>
-			<p>Here are a few ideas on how to get started with the template:</p>
-			<ul>
-				<li>Edit this page in <code>src/pages/index.astro</code></li>
-				<li>Edit the site header items in <code>src/components/Header.astro</code></li>
-				<li>Add your name to the footer in <code>src/components/Footer.astro</code></li>
-				<li>Check out the included blog posts in <code>src/content/blog/</code></li>
-				<li>Customize the blog post page layout in <code>src/layouts/BlogPost.astro</code></li>
-			</ul>
-			<p>
-				Have fun! If you get stuck, remember to <a href="https://docs.astro.build/"
-					>read the docs
-				</a> or <a href="https://astro.build/chat">join us on Discord</a> to ask questions.
-			</p>
-			<p>
-				Looking for a blog template with a bit more personality? Check out <a
-					href="https://github.com/Charca/astro-blog-template"
-					>astro-blog-template
-				</a> by <a href="https://twitter.com/Charca">Maxi Ferreira</a>.
-			</p>
+		<main
+			id="archive-app"
+			class={`app-shell scene-${firstScene.tone} room-${firstRoom.id}`}
+			style="--scene: 0; --travel: 0px"
+		>
+			<img class="field-image" src="/images/signal-field.png" alt="" aria-hidden="true" />
+			<img class="ocean-image" src="/images/ocean-descent.png" alt="" aria-hidden="true" />
+			<img class="brand-background brand-background-hall" src="/images/crown-hall-background.png" alt="" aria-hidden="true" />
+			<img class="brand-background brand-background-signature" src="/images/signature-background.png" alt="" aria-hidden="true" />
+			<video class="motion-video" src="/signal-motion.mp4" autoplay muted loop playsinline aria-hidden="true"></video>
+			<canvas class="signal-canvas" id="signal-canvas" aria-hidden="true"></canvas>
+
+			<div class="signal-creature creature-0" id="signal-creature" aria-hidden="true">
+				<video class="giragon-flight" src="/giragon-fly.mp4" autoplay muted loop playsinline></video>
+				<div class="creature-aura"></div>
+				<div class="creature-body">
+					<span class="creature-core"></span>
+					<span class="creature-wing creature-wing-left"></span>
+					<span class="creature-wing creature-wing-right"></span>
+					<span class="creature-tail"></span>
+					<span class="creature-eye"></span>
+				</div>
+			</div>
+
+			<div class="cursor-ring" id="cursor-ring" aria-hidden="true">
+				<span class="cursor-orbit"></span>
+				<span class="cursor-signal"><i></i><i></i></span>
+				<span class="cursor-egg"></span>
+				<span class="cursor-text">Hold to listen</span>
+			</div>
+
+			<section class="loader-screen" id="loader-screen" aria-label="Entry">
+				<p class="loader-top">{site.loaderTop}</p>
+				<button class="loader-skip" data-enter>Skip</button>
+				<button class="loader-core" data-enter>
+					<span id="boot-message">{bootMessages[0]}</span>
+					<strong>{site.brand}</strong>
+					<small>The Living Archive</small>
+					<i class="loader-dot"></i>
+				</button>
+				<div class="loader-progress" aria-hidden="true"><span id="boot-progress" style="width: 16%"></span></div>
+				<p class="loader-bottom">{site.loaderBottom}</p>
+			</section>
+
+			<header class="site-header">
+				<button class="brand-mark" data-room="home" aria-label="Return to the home room">
+					<span class="brand-sequence" aria-hidden="true">
+						<i>K</i><i>K</i><i>K</i><i>K</i><i>K</i>
+					</span>
+					<span>{site.brand}</span>
+				</button>
+				<nav class="phase-dots" id="phase-dots" aria-label="Scene navigation"></nav>
+				<div class="header-actions">
+					<button class="sound-button" id="sound-toggle">Sound <span>Off</span></button>
+					<button class="menu-button" id="menu-open">Menu</button>
+				</div>
+			</header>
+
+			<section class="menu-overlay" id="menu-overlay" aria-label="Archive menu" aria-hidden="true">
+				<div class="menu-overlay-top">
+					<span>{site.brand}</span>
+					<button id="menu-close">Close</button>
+				</div>
+				<div class="menu-overlay-grid">
+					<div class="menu-statement">
+						<p>Living archive</p>
+						<h2>Rooms, proof, symbols, and contact in one controlled house.</h2>
+						<span>The menu is built for fast orientation without flattening the world into a normal portfolio.</span>
+					</div>
+					<div class="menu-room-grid" aria-label="Room index">
+						{rooms.map((room, index) => (
+							<button data-room={room.id} class="menu-room-card">
+								<small>{String(index + 1).padStart(2, "0")}</small>
+								<strong>{room.label}</strong>
+								<span>{room.scenes.length} slides</span>
+							</button>
+						))}
+					</div>
+					<div class="menu-contact">
+						<span>Signal map</span>
+						<p>Music direction / visual systems / writing / worldbuilding / partnerships</p>
+						<a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a>
+					</div>
+				</div>
+				<p class="menu-footer-mark">KingShadP</p>
+			</section>
+
+			<nav class="room-nav" aria-label="Room navigation">
+				{rooms.map((room) => (
+					<button class={room.id === firstRoom.id ? "is-active" : ""} data-room={room.id}>
+						<span>{room.shortLabel}</span>
+					</button>
+				))}
+			</nav>
+
+			<aside class="archive-status-bar" aria-label="Current archive status">
+				<span>Living archive</span>
+				<span id="status-room">{firstRoom.label}</span>
+				<span id="status-scene">{firstScene.label}</span>
+				<span id="status-count">01 / 05</span>
+			</aside>
+
+			<section class="phase-stage" aria-live="polite">
+				<p class="room-kicker" id="room-kicker">{firstRoom.label}</p>
+				<p class="phase-legend" id="scene-whisper">{firstScene.whisper}</p>
+
+				<div class="phase-content">
+					<span class="phase-caption" id="scene-label">{firstScene.label}</span>
+					<h1 id="scene-title">
+						{firstScene.title.map((line, index) => (
+							<span style={`--word-delay: ${index * 90}ms`}>{line}</span>
+						))}
+					</h1>
+					<p id="scene-copy">{firstScene.copy}</p>
+					<button class="focus-button" id="focus-next">{firstScene.cta}</button>
+				</div>
+
+				<aside class="stat-panel" aria-label="Signal status">
+					<strong id="scene-depth">{firstScene.depth}</strong>
+					<span id="scene-signal">Archive signal</span>
+					<div class="intelligence-panel" id="intelligence-panel" hidden aria-label="Official intelligence documents">
+						<small>Available documents</small>
+						<a href="/uploads/kingshadp-official-intelligence-visual.pdf" target="_blank" rel="noreferrer">
+							<span>Official Intelligence</span>
+							<em>Visual dossier / 15 pages</em>
+						</a>
+						<a href="/uploads/kingshadp-official-intelligence-book.pdf" target="_blank" rel="noreferrer">
+							<span>Intelligence Book</span>
+							<em>Text edition / 25 pages</em>
+						</a>
+					</div>
+					<div class="capability-panel" id="capability-panel" hidden aria-label="Creative capabilities">
+						<small>Creative capabilities</small>
+						<div class="capability-row"><span>Music Creation</span><em>Hooks, lyrics, vocal direction, sonic atmosphere, and release identity.</em></div>
+						<div class="capability-row"><span>Brand Worldbuilding</span><em>Symbols, rules, language, visual codes, and story structure.</em></div>
+						<div class="capability-row"><span>Visual Direction</span><em>Campaign concepts, editorial imagery, product visuals, and luxury composition.</em></div>
+						<div class="capability-row"><span>Storytelling</span><em>Bios, lore, manifestos, press language, and emotionally grounded writing.</em></div>
+						<div class="capability-row"><span>Digital Experience</span><em>Interactive archives, room-by-room direction, motion, and UX content.</em></div>
+						<div class="capability-row"><span>Artifact Direction</span><em>Product concepts, packaging language, limited-release framing, and ritual.</em></div>
+					</div>
+					<ul id="scene-proof">
+						{firstScene.proof.map((item, index) => <li style={`--chip-index: ${index}`}>{item}</li>)}
+					</ul>
+				</aside>
+
+				<div class="phase-controls" aria-label="Previous and next scene">
+					<button id="prev-scene" disabled aria-label="Previous scene">
+						<svg viewBox="0 0 16 24" aria-hidden="true"><path d="M12 3 4 12l8 9"></path></svg>
+					</button>
+					<button id="next-scene" aria-label="Next scene">
+						<svg viewBox="0 0 16 24" aria-hidden="true"><path d="m4 3 8 9-8 9"></path></svg>
+					</button>
+				</div>
+			</section>
+
+			<div class="progress-rail" aria-hidden="true"><span id="progress-rail" style="height: 20%"></span></div>
+
+			<div class="scroll-prompt" aria-hidden="true">
+				<span></span>
+				<p>Scroll to discover</p>
+			</div>
+
+			<footer class="site-footer">
+				<span>© KingShadP 2026</span>
+				<a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a>
+			</footer>
 		</main>
-		<Footer />
+
+		<script id="archive-data" type="application/json" set:html={archivePayload}></script>
+		<script is:inline>
+			const archive = JSON.parse(document.getElementById("archive-data").textContent);
+			const app = document.getElementById("archive-app");
+			const canvas = document.getElementById("signal-canvas");
+			const ctx = canvas.getContext("2d");
+			const creature = document.getElementById("signal-creature");
+			const cursor = document.getElementById("cursor-ring");
+			const phaseDots = document.getElementById("phase-dots");
+			const roomButtons = Array.from(document.querySelectorAll("[data-room]"));
+			const bootMessage = document.getElementById("boot-message");
+			const bootProgress = document.getElementById("boot-progress");
+			const statusRoom = document.getElementById("status-room");
+			const statusScene = document.getElementById("status-scene");
+			const statusCount = document.getElementById("status-count");
+			const roomKicker = document.getElementById("room-kicker");
+			const sceneWhisper = document.getElementById("scene-whisper");
+			const sceneLabel = document.getElementById("scene-label");
+			const sceneTitle = document.getElementById("scene-title");
+			const sceneCopy = document.getElementById("scene-copy");
+			const focusNext = document.getElementById("focus-next");
+			const sceneDepth = document.getElementById("scene-depth");
+			const sceneSignal = document.getElementById("scene-signal");
+			const sceneProof = document.getElementById("scene-proof");
+			const progressRail = document.getElementById("progress-rail");
+			const prevScene = document.getElementById("prev-scene");
+			const nextScene = document.getElementById("next-scene");
+			const menuOpen = document.getElementById("menu-open");
+			const menuClose = document.getElementById("menu-close");
+			const menuOverlay = document.getElementById("menu-overlay");
+			const soundToggle = document.getElementById("sound-toggle");
+			const intelligencePanel = document.getElementById("intelligence-panel");
+			const capabilityPanel = document.getElementById("capability-panel");
+			const params = new URLSearchParams(window.location.search);
+
+			let activeRoomId = params.get("room") || "home";
+			let active = Math.max(0, Number(params.get("scene") || 0));
+			let travel = 0;
+			let sound = false;
+			let bootStep = 0;
+			let raf = 0;
+			let wheelLocked = false;
+			let travelTimer = 0;
+			let startX = 0;
+			let startY = 0;
+
+			function currentRoom() {
+				return archive.rooms.find((room) => room.id === activeRoomId) || archive.rooms[0];
+			}
+
+			function scenes() {
+				return currentRoom().scenes;
+			}
+
+			function markEntered() {
+				localStorage.setItem("ksp-entered", "true");
+				app.classList.add("is-entered");
+			}
+
+			function setTraveling() {
+				app.classList.add("is-traveling");
+				window.clearTimeout(travelTimer);
+				travelTimer = window.setTimeout(() => app.classList.remove("is-traveling"), 520);
+			}
+
+			function drawDots() {
+				phaseDots.innerHTML = scenes().map((scene, index) => (
+					`<button class="${index === active ? "is-active" : ""}" data-scene="${index}" aria-label="Go to scene: ${scene.label}"></button>`
+				)).join("");
+				phaseDots.querySelectorAll("[data-scene]").forEach((button) => {
+					button.addEventListener("click", () => {
+						markEntered();
+						setScene(Number(button.dataset.scene));
+					});
+				});
+			}
+
+			function setScene(index) {
+				const room = currentRoom();
+				const list = scenes();
+				active = Math.max(0, Math.min(index, list.length - 1));
+				const scene = list[active];
+				app.className = `app-shell is-entered scene-${scene.tone} room-${room.id}`;
+				app.style.setProperty("--scene", active);
+				app.style.setProperty("--travel", `${travel}px`);
+				creature.className = `signal-creature creature-${active}`;
+				statusRoom.textContent = room.label;
+				statusScene.textContent = scene.label;
+				statusCount.textContent = `${String(active + 1).padStart(2, "0")} / ${String(list.length).padStart(2, "0")}`;
+				roomKicker.textContent = room.label;
+				sceneWhisper.textContent = scene.whisper;
+				sceneLabel.textContent = scene.label;
+				sceneCopy.textContent = scene.copy;
+				focusNext.textContent = scene.cta;
+				sceneDepth.textContent = scene.depth;
+				sceneSignal.textContent = room.id === "home" ? "Archive signal" : room.shortLabel;
+				sceneTitle.innerHTML = scene.title.map((line, lineIndex) => `<span style="--word-delay: ${lineIndex * 90}ms">${line}</span>`).join("");
+				sceneProof.innerHTML = scene.proof.map((item, itemIndex) => `<li style="--chip-index: ${itemIndex}">${item}</li>`).join("");
+				progressRail.style.height = `${((active + 1) / list.length) * 100}%`;
+				prevScene.disabled = active === 0;
+				nextScene.disabled = active === list.length - 1;
+				intelligencePanel.hidden = room.id !== "literature";
+				capabilityPanel.hidden = room.id !== "about";
+				drawDots();
+				roomButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.room === room.id));
+			}
+
+			function enterRoom(roomId) {
+				activeRoomId = roomId;
+				active = 0;
+				travel += 180;
+				markEntered();
+				closeMenu();
+				setTraveling();
+				setScene(0);
+			}
+
+			function openMenu() {
+				markEntered();
+				menuOverlay.classList.add("is-open");
+				menuOverlay.setAttribute("aria-hidden", "false");
+			}
+
+			function closeMenu() {
+				menuOverlay.classList.remove("is-open");
+				menuOverlay.setAttribute("aria-hidden", "true");
+			}
+
+			function next() {
+				markEntered();
+				if (active < scenes().length - 1) setScene(active + 1);
+			}
+
+			function prev() {
+				if (active > 0) setScene(active - 1);
+			}
+
+			function resizeCanvas() {
+				const dpr = Math.min(window.devicePixelRatio || 1, 2);
+				canvas.width = Math.floor(window.innerWidth * dpr);
+				canvas.height = Math.floor(window.innerHeight * dpr);
+				canvas.style.width = `${window.innerWidth}px`;
+				canvas.style.height = `${window.innerHeight}px`;
+				ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+			}
+
+			function drawCanvas() {
+				const w = window.innerWidth;
+				const h = window.innerHeight;
+				const time = performance.now() * 0.0008;
+				const depth = active / Math.max(scenes().length - 1, 1);
+				ctx.clearRect(0, 0, w, h);
+				ctx.fillStyle = `rgba(0, 18, 28, ${0.05 + depth * 0.16})`;
+				ctx.fillRect(0, 0, w, h);
+				for (let i = 0; i < 34; i += 1) {
+					const y = ((i / 33) * h + Math.sin(time * 2 + i) * (12 + active * 4)) | 0;
+					ctx.strokeStyle = `rgba(166, 218, 255, ${0.025 + (i % 5) * 0.006 + depth * 0.012})`;
+					ctx.lineWidth = i % 9 === active ? 1.4 : 0.7;
+					ctx.beginPath();
+					ctx.moveTo(0, y);
+					for (let x = 0; x <= w; x += 42) {
+						ctx.lineTo(x, y + Math.sin(x * 0.008 + time * 6 + i * 0.6 + travel * 0.02) * (8 + active * 2.8));
+					}
+					ctx.stroke();
+				}
+				for (let i = 0; i < 90; i += 1) {
+					const x = (Math.sin(i * 12.989 + time * 0.7) * 0.5 + 0.5) * w;
+					const y = ((Math.cos(i * 7.17 + time * 0.55) * 0.5 + 0.5) * h + time * 60 + i * 9 + travel * 0.6) % h;
+					ctx.fillStyle = `rgba(217, 244, 255, ${0.05 + (i % 6) * 0.01})`;
+					ctx.fillRect(x, y, i % 3 === 0 ? 2 : 1, i % 4 === 0 ? 2 : 1);
+				}
+				raf = requestAnimationFrame(drawCanvas);
+			}
+
+			document.querySelectorAll("[data-enter]").forEach((button) => button.addEventListener("click", markEntered));
+			roomButtons.forEach((button) => button.addEventListener("click", () => enterRoom(button.dataset.room)));
+			focusNext.addEventListener("click", next);
+			nextScene.addEventListener("click", next);
+			prevScene.addEventListener("click", prev);
+			menuOpen.addEventListener("click", openMenu);
+			menuClose.addEventListener("click", closeMenu);
+			menuOverlay.addEventListener("click", (event) => {
+				if (event.target === menuOverlay) closeMenu();
+			});
+			soundToggle.addEventListener("click", () => {
+				sound = !sound;
+				soundToggle.querySelector("span").textContent = sound ? "On" : "Off";
+			});
+			window.addEventListener("keydown", (event) => {
+				if (event.key === "Escape") closeMenu();
+				if (event.key === "ArrowDown" || event.key === "ArrowRight") next();
+				if (event.key === "ArrowUp" || event.key === "ArrowLeft") prev();
+			});
+			window.addEventListener("wheel", (event) => {
+				event.preventDefault();
+				markEntered();
+				travel += event.deltaY;
+				setTraveling();
+				if (wheelLocked || Math.abs(event.deltaY) < 22) return;
+				wheelLocked = true;
+				event.deltaY > 0 ? next() : prev();
+				window.setTimeout(() => { wheelLocked = false; }, 780);
+			}, { passive: false });
+			window.addEventListener("pointermove", (event) => {
+				cursor.style.transform = `translate3d(${event.clientX}px, ${event.clientY}px, 0)`;
+			});
+			window.addEventListener("pointerdown", (event) => {
+				cursor.classList.add("is-holding");
+				if (event.pointerType !== "mouse") {
+					startX = event.clientX;
+					startY = event.clientY;
+				}
+			});
+			window.addEventListener("pointerup", (event) => {
+				cursor.classList.remove("is-holding");
+				if (event.pointerType === "mouse" || !startY) return;
+				const deltaY = startY - event.clientY;
+				const deltaX = startX - event.clientX;
+				startX = 0;
+				startY = 0;
+				if (Math.abs(deltaY) < 46 || Math.abs(deltaY) < Math.abs(deltaX) * 1.2) return;
+				markEntered();
+				travel += deltaY * 4;
+				setTraveling();
+				deltaY > 0 ? next() : prev();
+			});
+
+			if (params.has("entered") || localStorage.getItem("ksp-entered") === "true") {
+				app.classList.add("is-entered");
+			} else {
+				const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+				const stepDelay = reduceMotion ? 120 : 360;
+				const enterDelay = reduceMotion ? 900 : 2600;
+				const bootTimer = window.setInterval(() => {
+					bootStep = Math.min(bootStep + 1, archive.bootMessages.length - 1);
+					bootMessage.textContent = archive.bootMessages[bootStep];
+					bootProgress.style.width = `${Math.round(((bootStep + 1) / archive.bootMessages.length) * 100)}%`;
+				}, stepDelay);
+				window.setTimeout(() => {
+					window.clearInterval(bootTimer);
+					markEntered();
+				}, enterDelay);
+			}
+
+			resizeCanvas();
+			window.addEventListener("resize", resizeCanvas);
+			setScene(active);
+			drawCanvas();
+			console.info("KINGSHADP // THE LIVING ARCHIVE // SIGNAL FOUND.");
+		</script>
 	</body>
 </html>
