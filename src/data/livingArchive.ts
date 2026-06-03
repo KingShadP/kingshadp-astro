@@ -45,11 +45,11 @@ export const homeScenes = [
 		id: "creature",
 		label: "The Brand World",
 		whisper: "The larger creative world behind the music, visuals, symbols, and stories.",
-		title: ["The", "verse", "breathes"],
+		title: ["The", "Prophecy", "breathes"],
 		copy: "The Giragon, SP crest, signature language, myth fragments, and story systems make the site feel like a world being built with care.",
 		cta: "Enter world",
 		depth: "G",
-		tone: "creature",
+		tone: "Gardian",
 		proof: ["Giragon", "SP Crest", "Mythology"],
 	},
 	{
@@ -57,11 +57,10 @@ export const homeScenes = [
 		label: "Current Signal",
 		whisper: "What is being built now, without turning the site into social media.",
 		title: ["Current", "signal", "active"],
-		copy: "Now building: new music direction, visual identity system, archive webapp, and the KingShadP universe as one connected creative index.",
-		cta: "Contact signal",
-		depth: "ON",
+		copy: "Now pending: new music direction, visual identity system and the KingShadP universe. This section can be updated with new work, ideas, and directions without losing the intentionality of the rest of the World.",
+		depth: "S",
 		tone: "signal",
-		proof: ["New music", "Visual system", "Archive webapp"],
+		proof: ["New music", "Visual system", "Archival"],
 	},
 ];
 
