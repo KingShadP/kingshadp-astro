@@ -1,11 +1,12 @@
 ---
 import BaseHead from "../components/BaseHead.astro";
 import { SITE_DESCRIPTION, SITE_TITLE } from "../consts";
-import { bootMessages, rooms, site } from "../data/livingArchive";
+import { bootMessages, mediaPool, rooms, site } from "../data/livingArchive";
 
 const firstRoom = rooms[0];
 const firstScene = firstRoom.scenes[0];
-const archivePayload = JSON.stringify({ site, rooms, bootMessages });
+const archivePayload = JSON.stringify({ site, rooms, bootMessages, mediaPool });
+const mediaLoop = [...mediaPool, ...mediaPool, ...mediaPool];
 ---
 
 <!doctype html>
@@ -19,7 +20,7 @@ const archivePayload = JSON.stringify({ site, rooms, bootMessages });
 			class={`app-shell scene-${firstScene.tone} room-${firstRoom.id}`}
 			style="--scene: 0; --travel: 0px"
 		>
-			<img class="field-image" src="\images\ChatGPT Image May 25, 2026, 09_56_01 PM.png" alt="" aria-hidden="true" />
+			<img class="field-image" src="/images/ChatGPT Image May 25, 2026, 09_56_01 PM.png" alt="" aria-hidden="true" />
 			<img class="ocean-image" src="/images/ocean-descent.png" alt="" aria-hidden="true" />
 			<img class="brand-background brand-background-hall" src="/images/crown-hall-background.png" alt="" aria-hidden="true" />
 			<img class="brand-background brand-background-signature" src="/images/signature-background.png" alt="" aria-hidden="true" />
@@ -27,7 +28,7 @@ const archivePayload = JSON.stringify({ site, rooms, bootMessages });
 			<canvas class="signal-canvas" id="signal-canvas" aria-hidden="true"></canvas>
 
 			<div class="signal-creature creature-0" id="signal-creature" aria-hidden="true">
-				<video class="giragon-flight" src="public\crownspin.mp4" autoplay muted loop playsinline></video>
+				<video class="giragon-flight" src="/crownspin.mp4" autoplay muted loop playsinline></video>
 				<div class="creature-aura"></div>
 				<div class="creature-body">
 					<span class="creature-core"></span>
@@ -169,6 +170,32 @@ const archivePayload = JSON.stringify({ site, rooms, bootMessages });
 				</div>
 			</section>
 
+			<section class="media-infinity" id="media-infinity" aria-label="Endless media pool">
+				<div class="media-pool-header">
+					<span>Music & Visuals</span>
+					<strong>Infinity pool</strong>
+					<p>Photos, videos, symbols, product pieces, and campaign studies moving as one visual archive.</p>
+				</div>
+				<div class="media-pool" id="media-pool">
+					{mediaLoop.map((item, index) => (
+						<article class={`media-tile media-${item.shape}`} style={`--tile-index: ${index}`}>
+							<div class="media-frame">
+								{item.type === "video" ? (
+									<video src={item.src} autoplay muted loop playsinline></video>
+								) : (
+									<img src={item.src} alt={item.label} loading="lazy" />
+								)}
+							</div>
+							<div class="media-tile-caption">
+								<strong>{item.label}</strong>
+								<span>{item.meta}</span>
+							</div>
+						</article>
+					))}
+				</div>
+				<div class="media-pool-shadow" aria-hidden="true"></div>
+			</section>
+
 			<div class="progress-rail" aria-hidden="true"><span id="progress-rail" style="height: 20%"></span></div>
 
 			<div class="scroll-prompt" aria-hidden="true">
@@ -215,6 +242,7 @@ const archivePayload = JSON.stringify({ site, rooms, bootMessages });
 			const soundToggle = document.getElementById("sound-toggle");
 			const intelligencePanel = document.getElementById("intelligence-panel");
 			const capabilityPanel = document.getElementById("capability-panel");
+			const mediaPoolEl = document.getElementById("media-pool");
 			const params = new URLSearchParams(window.location.search);
 
 			let activeRoomId = params.get("room") || "home";
@@ -224,6 +252,7 @@ const archivePayload = JSON.stringify({ site, rooms, bootMessages });
 			let bootStep = 0;
 			let raf = 0;
 			let wheelLocked = false;
+			let mediaScroll = 0;
 			let travelTimer = 0;
 			let startX = 0;
 			let startY = 0;
@@ -310,6 +339,13 @@ const archivePayload = JSON.stringify({ site, rooms, bootMessages });
 				menuOverlay.setAttribute("aria-hidden", "true");
 			}
 
+			function syncMediaPool() {
+				if (!mediaPoolEl) return;
+				const loopHeight = Math.max(mediaPoolEl.scrollHeight / 3, 1);
+				const offset = ((mediaScroll % loopHeight) + loopHeight) % loopHeight;
+				mediaPoolEl.style.transform = `translate3d(0, ${-offset}px, 0)`;
+			}
+
 			function next() {
 				markEntered();
 				if (active < scenes().length - 1) setScene(active + 1);
@@ -380,6 +416,11 @@ const archivePayload = JSON.stringify({ site, rooms, bootMessages });
 				markEntered();
 				travel += event.deltaY;
 				setTraveling();
+				if (activeRoomId === "media") {
+					mediaScroll += event.deltaY * 1.25;
+					syncMediaPool();
+					return;
+				}
 				if (wheelLocked || Math.abs(event.deltaY) < 22) return;
 				wheelLocked = true;
 				event.deltaY > 0 ? next() : prev();
@@ -406,6 +447,11 @@ const archivePayload = JSON.stringify({ site, rooms, bootMessages });
 				markEntered();
 				travel += deltaY * 4;
 				setTraveling();
+				if (activeRoomId === "media") {
+					mediaScroll += deltaY * 3.4;
+					syncMediaPool();
+					return;
+				}
 				deltaY > 0 ? next() : prev();
 			});
 
@@ -429,6 +475,7 @@ const archivePayload = JSON.stringify({ site, rooms, bootMessages });
 			resizeCanvas();
 			window.addEventListener("resize", resizeCanvas);
 			setScene(active);
+			syncMediaPool();
 			drawCanvas();
 			console.info("KINGSHADP // THE LIVING ARCHIVE // SIGNAL FOUND.");
 		</script>

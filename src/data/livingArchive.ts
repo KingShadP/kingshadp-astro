@@ -321,6 +321,93 @@ export const rooms = [
 	},
 ];
 
+export const mediaPool = [
+	{
+		type: "video",
+		src: "/giragon-fly.mp4",
+		label: "Giragon flight",
+		meta: "Motion study",
+		shape: "wide",
+	},
+	{
+		type: "image",
+		src: "/images/ChatGPT Image May 25, 2026, 09_56_01 PM.png",
+		label: "Grand chamber",
+		meta: "World background",
+		shape: "wide",
+	},
+	{
+		type: "image",
+		src: "/images/00_SOURCE_SP_CREST_TRANSPARENT.png",
+		label: "SP crest",
+		meta: "Symbol system",
+		shape: "tall",
+	},
+	{
+		type: "video",
+		src: "/kingshadpspin.mp4",
+		label: "Signature spin",
+		meta: "Motion mark",
+		shape: "square",
+	},
+	{
+		type: "image",
+		src: "/images/01_BACK_GRANDEUR_BALANCED_SP_OVER_SIGNATURE_3513x2340_300DPI_TRANSPARENT.png",
+		label: "Back grandeur",
+		meta: "Apparel art",
+		shape: "wide",
+	},
+	{
+		type: "image",
+		src: "/images/ksp_item_01_black_leather_dragon_journal_transparent.png",
+		label: "Dragon journal",
+		meta: "Artifact concept",
+		shape: "square",
+	},
+	{
+		type: "image",
+		src: "/images/ChatGPT Image May 27, 2026, 02_11_10 AM.png",
+		label: "Campaign frame",
+		meta: "Visual study",
+		shape: "wide",
+	},
+	{
+		type: "video",
+		src: "/crownspin.mp4",
+		label: "Crown spin",
+		meta: "Royal motion",
+		shape: "square",
+	},
+	{
+		type: "image",
+		src: "/images/ksp_item_04_bronze_sp_medallion_transparent.png",
+		label: "SP medallion",
+		meta: "Object language",
+		shape: "square",
+	},
+	{
+		type: "image",
+		src: "/images/03_FRONT_OR_BACK_KINGSHADP_SIGNATURE_single_crown_full_color_3513x2340.png",
+		label: "Signature crown",
+		meta: "Logo art",
+		shape: "wide",
+	},
+	{
+		type: "image",
+		src: "/images/kingshad3.png",
+		label: "KingShadP frame",
+		meta: "Portrait direction",
+		shape: "tall",
+	},
+	{
+		type: "image",
+		src: "/images/ksp_item_06_ornate_rose_gold_crown_transparent.png",
+		label: "Rose gold crown",
+		meta: "Artifact concept",
+		shape: "square",
+	},
+];
+
 export const bootMessages = [
 	"INITIALIZING SIGNAL...",
 	"LOADING AUDIO VAULT...",
