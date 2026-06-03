@@ -10,14 +10,14 @@ export const site = {
 export const homeScenes = [
 	{
 		id: "surface",
-		label: "Main Index",
-		whisper: "The official digital home of the artist, the archive, and the mythology.",
-		title: ["The", "living", "archive"],
+		label: "WELCOME TO KINGSHADP",
+		whisper: "The official digital Universe of the artist, the archive, and the mythology.",
+		title: ["The", "Creator's", "Creations"],
 		copy: "KingShadP is an artist-built universe: sound, story, image, identity, and atmosphere formed into one serious creative operating system.",
-		cta: "Enter rooms",
-		depth: "K",
+		cta: "Explore worlds",
+		depth: ["K", "S", "H", "A", "D", "P"],
 		tone: "surface",
-		proof: ["Music", "Visuals", "Writing"],
+		proof: ["Audio", "Visuals", "Literature"],
 	},
 	{
 		id: "drift",
@@ -43,7 +43,7 @@ export const homeScenes = [
 	},
 	{
 		id: "creature",
-		label: "The Verse",
+		label: "The Brand World",
 		whisper: "The larger creative world behind the music, visuals, symbols, and stories.",
 		title: ["The", "verse", "breathes"],
 		copy: "The Giragon, SP crest, signature language, myth fragments, and story systems make the site feel like a world being built with care.",
