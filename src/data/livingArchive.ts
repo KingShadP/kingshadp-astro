@@ -15,9 +15,9 @@ export const homeScenes = [
 		title: ["The", "Creator's", "Creations"],
 		copy: "KingShadP is an artist-built universe: sound, story, image, identity, and atmosphere formed into one serious creative operating system.",
 		cta: "Explore worlds",
-		depth: ["K", "S", "H", "A", "D", "P"],
+		depth: ["K", "S", "P"],
 		tone: "surface",
-		proof: ["Audio", "Visuals", "Literature"],
+		proof: ["Audio", "Visuals", "Literature", "Brand"],
 	},
 	{
 		id: "drift",
