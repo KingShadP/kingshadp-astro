@@ -6,7 +6,7 @@ import { bootMessages, mediaPool, rooms, site } from "../data/livingArchive";
 const firstRoom = rooms[0];
 const firstScene = firstRoom.scenes[0];
 const archivePayload = JSON.stringify({ site, rooms, bootMessages, mediaPool });
-const mediaLoop = [...mediaPool, ...mediaPool, ...mediaPool];
+const mediaLoop = mediaPool;
 ---
 
 <!doctype html>
@@ -15,6 +15,7 @@ const mediaLoop = [...mediaPool, ...mediaPool, ...mediaPool];
 		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} image="/images/signature-background.png" />
 	</head>
 	<body>
+		<a class="skip-link" href="#scene-title">Skip to main content</a>
 		<main
 			id="archive-app"
 			class={`app-shell scene-${firstScene.tone} room-${firstRoom.id}`}
@@ -69,6 +70,7 @@ const mediaLoop = [...mediaPool, ...mediaPool, ...mediaPool];
 				<nav class="phase-dots" id="phase-dots" aria-label="Scene navigation"></nav>
 				<div class="header-actions">
 					<button class="sound-button" id="sound-toggle">Sound <span>Off</span></button>
+					<button class="motion-button" id="motion-toggle">Motion <span>On</span></button>
 					<button class="menu-button" id="menu-open">Menu</button>
 				</div>
 			</header>
@@ -80,9 +82,9 @@ const mediaLoop = [...mediaPool, ...mediaPool, ...mediaPool];
 				</div>
 				<div class="menu-overlay-grid">
 					<div class="menu-statement">
-						<p>Living archive</p>
-						<h2>Rooms, proof, symbols, and contact in one controlled house.</h2>
-						<span>The menu is built for fast orientation without flattening the world into a normal portfolio.</span>
+						<p>Official Archive</p>
+						<h2>Music, visuals, writing, identity, and contact in one living house.</h2>
+						<span>Use the sections to move quickly without losing the atmosphere of the KingShadP world.</span>
 					</div>
 					<div class="menu-room-grid" aria-label="Room index">
 						{rooms.map((room, index) => (
@@ -94,8 +96,8 @@ const mediaLoop = [...mediaPool, ...mediaPool, ...mediaPool];
 						))}
 					</div>
 					<div class="menu-contact">
-						<span>Signal map</span>
-						<p>Music direction / visual systems / writing / KingShadP Universe / partnerships</p>
+						<span>Creative Map</span>
+						<p>Music collaboration / visual direction / writing / press / partnerships</p>
 						<a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a>
 					</div>
 				</div>
@@ -170,6 +172,36 @@ const mediaLoop = [...mediaPool, ...mediaPool, ...mediaPool];
 				</div>
 			</section>
 
+			<section class="home-proof-dock" aria-label="Homepage quick paths">
+				<article class="home-proof-card home-proof-card-primary">
+					<span>Latest Music</span>
+					<strong>Music is the pulse.</strong>
+					<p>Releases, demos, lyrics, videos, and behind-the-song notes need to sit near the front of the archive.</p>
+					<div>
+						<button data-room="media">Open music</button>
+						<a href="https://www.youtube.com/" target="_blank" rel="noreferrer">YouTube</a>
+					</div>
+				</article>
+				<article class="home-proof-card">
+					<span>Press / Partners</span>
+					<strong>Official materials.</strong>
+					<p>One-sheet, approved visuals, artist facts, press contact, and partner-ready context belong here before the long documents.</p>
+					<div>
+						<button data-room="about">View about</button>
+						<a href={`mailto:${site.contactEmail}`}>Contact</a>
+					</div>
+				</article>
+				<article class="home-proof-card">
+					<span>Visual World</span>
+					<strong>Symbols with restraint.</strong>
+					<p>Giragon, SP crest, signature marks, campaign images, and artifact studies should read as one controlled visual system.</p>
+					<div>
+						<button data-room="brand">Open world</button>
+						<button data-room="media">View visuals</button>
+					</div>
+				</article>
+			</section>
+
 			<section class="media-infinity" id="media-infinity" aria-label="Endless media pool">
 				<div class="media-pool" id="media-pool">
 					{mediaLoop.map((item, index) => (
@@ -178,7 +210,7 @@ const mediaLoop = [...mediaPool, ...mediaPool, ...mediaPool];
 								{item.type === "video" ? (
 									<video src={item.src} autoplay muted loop playsinline></video>
 								) : (
-									<img src={item.src} alt={item.label} loading="lazy" />
+									<img src={item.src} alt={item.label || ""} loading={index < 4 ? "eager" : "lazy"} aria-hidden={!item.label ? "true" : undefined} />
 								)}
 							</div>
 							{(item.label || item.meta) && (
@@ -237,6 +269,7 @@ const mediaLoop = [...mediaPool, ...mediaPool, ...mediaPool];
 			const menuClose = document.getElementById("menu-close");
 			const menuOverlay = document.getElementById("menu-overlay");
 			const soundToggle = document.getElementById("sound-toggle");
+			const motionToggle = document.getElementById("motion-toggle");
 			const intelligencePanel = document.getElementById("intelligence-panel");
 			const capabilityPanel = document.getElementById("capability-panel");
 			const mediaPoolEl = document.getElementById("media-pool");
@@ -253,6 +286,7 @@ const mediaLoop = [...mediaPool, ...mediaPool, ...mediaPool];
 			let travelTimer = 0;
 			let startX = 0;
 			let startY = 0;
+			let motionPaused = false;
 
 			function currentRoom() {
 				return archive.rooms.find((room) => room.id === activeRoomId) || archive.rooms[0];
@@ -290,7 +324,7 @@ const mediaLoop = [...mediaPool, ...mediaPool, ...mediaPool];
 				const list = scenes();
 				active = Math.max(0, Math.min(index, list.length - 1));
 				const scene = list[active];
-				app.className = `app-shell is-entered scene-${scene.tone} room-${room.id}`;
+				app.className = `app-shell is-entered scene-${scene.tone} room-${room.id}${motionPaused ? " is-motion-paused" : ""}`;
 				app.style.setProperty("--scene", active);
 				app.style.setProperty("--travel", `${travel}px`);
 				creature.className = `signal-creature creature-${active}`;
@@ -338,9 +372,29 @@ const mediaLoop = [...mediaPool, ...mediaPool, ...mediaPool];
 
 			function syncMediaPool() {
 				if (!mediaPoolEl) return;
-				const loopHeight = Math.max(mediaPoolEl.scrollHeight / 3, 1);
-				const offset = ((mediaScroll % loopHeight) + loopHeight) % loopHeight;
+				const maxOffset = Math.max(mediaPoolEl.scrollHeight - window.innerHeight + 260, 1);
+				const offset = Math.max(0, Math.min(mediaScroll, maxOffset));
+				mediaScroll = offset;
 				mediaPoolEl.style.transform = `translate3d(0, ${-offset}px, 0)`;
+			}
+
+			function setMotionState(paused) {
+				motionPaused = paused;
+				app.classList.toggle("is-motion-paused", motionPaused);
+				motionToggle.querySelector("span").textContent = motionPaused ? "Off" : "On";
+				document.querySelectorAll("video").forEach((video) => {
+					if (motionPaused) {
+						video.pause();
+					} else {
+						video.play().catch(() => {});
+					}
+				});
+				if (motionPaused) {
+					cancelAnimationFrame(raf);
+				} else {
+					cancelAnimationFrame(raf);
+					drawCanvas();
+				}
 			}
 
 			function next() {
@@ -403,6 +457,7 @@ const mediaLoop = [...mediaPool, ...mediaPool, ...mediaPool];
 				sound = !sound;
 				soundToggle.querySelector("span").textContent = sound ? "On" : "Off";
 			});
+			motionToggle.addEventListener("click", () => setMotionState(!motionPaused));
 			window.addEventListener("keydown", (event) => {
 				if (event.key === "Escape") closeMenu();
 				if (event.key === "ArrowDown" || event.key === "ArrowRight") next();
@@ -473,7 +528,11 @@ const mediaLoop = [...mediaPool, ...mediaPool, ...mediaPool];
 			window.addEventListener("resize", resizeCanvas);
 			setScene(active);
 			syncMediaPool();
-			drawCanvas();
+			if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+				setMotionState(true);
+			} else {
+				drawCanvas();
+			}
 			console.info("KINGSHADP // THE LIVING ARCHIVE // SIGNAL FOUND.");
 		</script>
 	</body>

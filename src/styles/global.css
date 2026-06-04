@@ -45,6 +45,32 @@ button {
   border: 0;
 }
 
+.skip-link {
+  position: fixed;
+  left: 18px;
+  top: 14px;
+  z-index: 80;
+  padding: 10px 12px;
+  color: #050507;
+  background: var(--champagne);
+  font-size: 11px;
+  font-weight: 950;
+  text-transform: uppercase;
+  text-decoration: none;
+  transform: translateY(-160%);
+  transition: transform .2s ease;
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+button:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--champagne);
+  outline-offset: 4px;
+}
+
 .app-shell {
   position: relative;
   width: 100vw;
@@ -771,6 +797,16 @@ button {
   opacity: .54;
 }
 
+.is-motion-paused *,
+.is-motion-paused *::before,
+.is-motion-paused *::after {
+  animation-play-state: paused !important;
+}
+
+.is-motion-paused .signal-canvas {
+  opacity: .16;
+}
+
 .menu-overlay {
   position: fixed;
   inset: 0;
@@ -1081,6 +1117,7 @@ button {
 }
 
 .sound-button,
+.motion-button,
 .menu-button {
   color: var(--text);
   background: transparent;
@@ -1091,7 +1128,8 @@ button {
   letter-spacing: 0;
 }
 
-.sound-button span {
+.sound-button span,
+.motion-button span {
   color: var(--blue);
   margin-left: 6px;
 }
