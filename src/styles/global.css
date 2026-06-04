@@ -1597,6 +1597,10 @@ a:focus-visible {
   line-height: 1.45;
 }
 
+.room-home .phase-legend {
+  display: none;
+}
+
 .phase-content {
   grid-column: 2;
 }
@@ -1941,6 +1945,104 @@ a:focus-visible {
   stroke-width: 2;
 }
 
+.home-proof-dock {
+  position: fixed;
+  left: clamp(28px, 5vw, 64px);
+  right: auto;
+  bottom: clamp(96px, 7.4vw, 118px);
+  z-index: 13;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(150px, 1fr));
+  gap: 8px;
+  width: min(720px, calc(100vw - 132px));
+  pointer-events: auto;
+  transition: opacity .42s ease, transform .42s cubic-bezier(.14, 1, .34, 1);
+}
+
+.room-media .home-proof-dock,
+.room-literature .home-proof-dock,
+.room-about .home-proof-dock,
+.room-brand .home-proof-dock,
+.scene-drift .home-proof-dock,
+.scene-deep .home-proof-dock,
+.scene-creature .home-proof-dock,
+.scene-signal .home-proof-dock {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(14px);
+}
+
+.home-proof-card {
+  display: grid;
+  align-content: start;
+  gap: 6px;
+  min-height: 88px;
+  padding: 11px 12px;
+  color: var(--text);
+  border: 1px solid rgba(225, 217, 193, .18);
+  background:
+    linear-gradient(135deg, rgba(225, 217, 193, .09), transparent 54%),
+    rgba(3, 3, 5, .48);
+  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(16px);
+  box-shadow: 0 30px 80px rgba(0, 0, 0, .34);
+}
+
+.home-proof-card-primary {
+  border-color: rgba(242, 196, 109, .3);
+  background:
+    radial-gradient(circle at 12% 18%, rgba(242, 196, 109, .14), transparent 38%),
+    linear-gradient(135deg, rgba(225, 217, 193, .1), transparent 52%),
+    rgba(3, 3, 5, .58);
+}
+
+.home-proof-card span {
+  color: rgba(242, 196, 109, .82);
+  font-size: 9px;
+  font-weight: 950;
+  text-transform: uppercase;
+}
+
+.home-proof-card strong {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(16px, 1.35vw, 22px);
+  line-height: 1;
+}
+
+.home-proof-card p {
+  display: none;
+}
+
+.home-proof-card div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.home-proof-card button,
+.home-proof-card a {
+  min-height: 28px;
+  padding: 0 9px;
+  display: inline-grid;
+  place-items: center;
+  color: var(--text);
+  border: 1px solid rgba(237, 244, 255, .18);
+  background: rgba(2, 3, 7, .34);
+  cursor: pointer;
+  font-size: 8px;
+  font-weight: 950;
+  text-transform: uppercase;
+  text-decoration: none;
+}
+
+.home-proof-card button:hover,
+.home-proof-card a:hover {
+  color: #050507;
+  border-color: var(--champagne);
+  background: var(--champagne);
+}
+
 .progress-rail {
   position: fixed;
   right: clamp(28px, 5vw, 64px);
@@ -2219,7 +2321,14 @@ a:focus-visible {
   }
 
   .header-actions {
-    gap: 12px;
+    gap: 10px;
+    align-items: start;
+  }
+
+  .sound-button,
+  .motion-button,
+  .menu-button {
+    font-size: 9px;
   }
 
   .phase-stage {
@@ -2265,6 +2374,32 @@ a:focus-visible {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     grid-auto-rows: 92px;
     gap: 8px;
+  }
+
+  .home-proof-dock {
+    left: 20px;
+    right: 20px;
+    bottom: 104px;
+    grid-template-columns: 1fr;
+    width: auto;
+    max-width: none;
+  }
+
+  .home-proof-card {
+    min-height: auto;
+    padding: 12px;
+  }
+
+  .home-proof-card:not(.home-proof-card-primary) {
+    display: none;
+  }
+
+  .home-proof-card strong {
+    font-size: 22px;
+  }
+
+  .home-proof-card p {
+    display: none;
   }
 
   .media-tile.media-wide {

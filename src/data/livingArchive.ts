@@ -809,10 +809,10 @@ export const mediaPool = [
 ];
 
 export const bootMessages = [
-	"INITIALIZING SIGNAL...",
-	"LOADING AUDIO VAULT...",
-	"LOADING VISUAL DOSSIER...",
-	"LOADING LYRIC LEDGER...",
-	"LOADING THE VERSE...",
-	"ARCHIVE ONLINE",
+	"ENTERING THE ARCHIVE...",
+	"LOADING MUSIC...",
+	"LOADING VISUALS...",
+	"LOADING WRITING...",
+	"LOADING THE WORLD...",
+	"ARCHIVE READY",
 ];

@@ -26,6 +26,7 @@ const mediaLoop = mediaPool;
 			<img class="brand-background brand-background-hall" src="/images/crown-hall-background.png" alt="" aria-hidden="true" />
 			<img class="brand-background brand-background-signature" src="/images/signature-background.png" alt="" aria-hidden="true" />
 			<video class="motion-video" src="/signal-motion.mp4" autoplay muted loop playsinline aria-hidden="true"></video>
+			<audio id="site-audio" src="/audio/liturgy-of-shad-p-web.wav" preload="metadata" loop></audio>
 			<canvas class="signal-canvas" id="signal-canvas" aria-hidden="true"></canvas>
 
 			<div class="signal-creature creature-0" id="signal-creature" aria-hidden="true">
@@ -53,7 +54,7 @@ const mediaLoop = mediaPool;
 				<button class="loader-core" data-enter>
 					<span id="boot-message">{bootMessages[0]}</span>
 					<strong>{site.brand}</strong>
-					<small>The Living Archive</small>
+					<small>Official Archive</small>
 					<i class="loader-dot"></i>
 				</button>
 				<div class="loader-progress" aria-hidden="true"><span id="boot-progress" style="width: 16%"></span></div>
@@ -113,7 +114,7 @@ const mediaLoop = mediaPool;
 			</nav>
 
 			<aside class="archive-status-bar" aria-label="Current archive status">
-				<span>Living archive</span>
+				<span>Official Archive</span>
 				<span id="status-room">{firstRoom.label}</span>
 				<span id="status-scene">{firstScene.label}</span>
 				<span id="status-count">01 / 05</span>
@@ -269,6 +270,7 @@ const mediaLoop = mediaPool;
 			const menuClose = document.getElementById("menu-close");
 			const menuOverlay = document.getElementById("menu-overlay");
 			const soundToggle = document.getElementById("sound-toggle");
+			const siteAudio = document.getElementById("site-audio");
 			const motionToggle = document.getElementById("motion-toggle");
 			const intelligencePanel = document.getElementById("intelligence-panel");
 			const capabilityPanel = document.getElementById("capability-panel");
@@ -455,7 +457,22 @@ const mediaLoop = mediaPool;
 			});
 			soundToggle.addEventListener("click", () => {
 				sound = !sound;
+				if (sound) {
+					siteAudio.volume = 0.72;
+					siteAudio.play().catch(() => {
+						sound = false;
+						soundToggle.querySelector("span").textContent = "Off";
+					});
+				} else {
+					siteAudio.pause();
+				}
 				soundToggle.querySelector("span").textContent = sound ? "On" : "Off";
+			});
+			siteAudio.addEventListener("pause", () => {
+				if (!siteAudio.ended) {
+					sound = false;
+					soundToggle.querySelector("span").textContent = "Off";
+				}
 			});
 			motionToggle.addEventListener("click", () => setMotionState(!motionPaused));
 			window.addEventListener("keydown", (event) => {
