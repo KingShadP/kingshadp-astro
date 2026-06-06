@@ -1,0 +1,63 @@
+---
+import { contactEmail, houseRoutes } from "../data/house";
+
+const currentPath = Astro.url.pathname;
+---
+
+<header class="house-header" data-house-header>
+	<a class="house-brand" href="/" aria-label="KingShadP home">
+		<img src="/images/00_SOURCE_SP_CREST_TRANSPARENT.png" alt="" width="40" height="40" />
+		<span>KingShadP</span>
+	</a>
+
+	<nav class="desktop-nav" aria-label="Primary navigation">
+		{houseRoutes.map((item) => (
+			<a href={item.href} aria-current={currentPath === item.href ? "page" : undefined}>{item.label}</a>
+		))}
+	</nav>
+
+	<div class="header-actions">
+		<a class="header-contact" href={`mailto:${contactEmail}`}>Contact</a>
+		<button class="menu-toggle" type="button" aria-expanded="false" aria-controls="house-drawer">
+			<span>Menu</span>
+			<i aria-hidden="true"></i>
+		</button>
+	</div>
+
+	<div class="house-drawer" id="house-drawer" hidden>
+		<div class="drawer-top">
+			<p>Explore the house</p>
+			<button type="button" data-drawer-close aria-label="Close menu">Close</button>
+		</div>
+		<nav aria-label="Mobile navigation">
+			<a class="drawer-home" href="/">Home <span>Official Creative House</span></a>
+			{houseRoutes.map((item) => (
+				<a href={item.href} aria-current={currentPath === item.href ? "page" : undefined}>
+					{item.label}
+					<span>{item.room}</span>
+				</a>
+			))}
+		</nav>
+		<a class="drawer-email" href={`mailto:${contactEmail}`}>{contactEmail}</a>
+	</div>
+</header>
+
+<script>
+	const header = document.querySelector("[data-house-header]");
+	const toggle = header?.querySelector(".menu-toggle");
+	const drawer = header?.querySelector(".house-drawer");
+	const close = header?.querySelector("[data-drawer-close]");
+
+	const setOpen = (open: boolean) => {
+		if (!(toggle instanceof HTMLButtonElement) || !(drawer instanceof HTMLElement)) return;
+		toggle.setAttribute("aria-expanded", String(open));
+		drawer.hidden = !open;
+		document.documentElement.classList.toggle("menu-open", open);
+	};
+
+	toggle?.addEventListener("click", () => setOpen(toggle.getAttribute("aria-expanded") !== "true"));
+	close?.addEventListener("click", () => setOpen(false));
+	window.addEventListener("keydown", (event) => {
+		if (event.key === "Escape") setOpen(false);
+	});
+</script>

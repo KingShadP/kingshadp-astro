@@ -1,0 +1,121 @@
+---
+import HouseLayout from "../layouts/HouseLayout.astro";
+import RoomHero from "../components/RoomHero.astro";
+import SectionHeading from "../components/SectionHeading.astro";
+import ContactBand from "../components/ContactBand.astro";
+import { backgrounds } from "../data/house";
+---
+
+<HouseLayout
+	title="Music | KingShadP Sonic Room"
+	description="Listen to KingShadP, inspect the current sound direction, and enter the archive of releases, lyrics, demos, and performance work."
+	image="/images/backgrounds/bg-sonic-room.webp"
+>
+	<RoomHero
+		humanTitle="Sonic Room"
+		kicker="The center of the house"
+		title="Music"
+		copy="Releases, demos, lyrics, sound direction, and the work behind the record. Every other room answers to this one."
+		background={backgrounds.music}
+		align="right"
+		actions={[
+			{ label: "Play Featured Track", href: "#featured-track", primary: true },
+			{ label: "Read the Dossier", href: "#track-dossier" },
+			{ label: "Contact", href: "/contact" },
+		]}
+		nextLabel="Hear the current signal"
+	/>
+
+	<section class="content-section content-section--soft" id="room-content">
+		<div class="section-inner music-feature" id="featured-track">
+			<div class="music-cover">
+				<video autoplay muted loop playsinline poster="/images/giragon.png">
+					<source src="/signal-motion.mp4" type="video/mp4" />
+				</video>
+			</div>
+			<div class="music-copy">
+				<p>Featured Track / House Recording 001</p>
+				<h2>The Liturgy of Shad P I</h2>
+				<span>
+					The first formal sound document in the house: a measured opening built around
+					presence, tension, and command.
+				</span>
+				<audio class="audio-player" controls preload="metadata">
+					<source src="/audio/liturgy-of-shad-p-web.wav" type="audio/wav" />
+				</audio>
+				<div class="release-ledger" aria-label="Track information">
+					<div><small>Format</small><strong>Audio statement</strong></div>
+					<div><small>Status</small><strong>Featured recording</strong></div>
+					<div><small>House year</small><strong>2026</strong></div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section class="content-section" id="track-dossier">
+		<div class="section-inner">
+			<SectionHeading
+				label="Track Dossier"
+				title="What the Record Establishes"
+				copy="The piece is not background decoration. It sets the pace, authority, and emotional temperature of the house."
+			/>
+			<div class="music-notes">
+				<article>
+					<span>01</span>
+					<h3>Voice</h3>
+					<p>The vocal presence stays close and deliberate. Nothing is rushed to prove scale.</p>
+				</article>
+				<article>
+					<span>02</span>
+					<h3>Structure</h3>
+					<p>The arrangement behaves like an opening chamber: arrival, recognition, then entry.</p>
+				</article>
+				<article>
+					<span>03</span>
+					<h3>Visual Link</h3>
+					<p>Black stone, rose gold, smoke, and the Giragon extend the same tone without replacing the music.</p>
+				</article>
+			</div>
+		</div>
+	</section>
+
+	<section class="content-section content-section--soft">
+		<div class="section-inner feature-split">
+			<div class="feature-media">
+				<video controls playsinline preload="metadata" poster="/images/giragon.png">
+					<source src="/giragon-fly.mp4" type="video/mp4" />
+				</video>
+			</div>
+			<div class="feature-copy">
+				<p class="feature-label">Motion Companion</p>
+				<h2>The Giragon in Flight</h2>
+				<p>
+					The flying Giragon remains the moving guardian of the house. Here it accompanies
+					the sound without interrupting playback or forcing audio.
+				</p>
+				<div class="text-links">
+					<a href="/world">Read the Giragon rules</a>
+					<a href="/visuals">View motion and campaigns</a>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section class="content-section">
+		<div class="section-inner">
+			<SectionHeading
+				label="Archive Structure"
+				title="Built for the Next Release"
+				copy="New tracks can be added with cover art, credits, lyrics, notes, video, and release status without rebuilding the room."
+			/>
+			<div class="release-ledger release-ledger--large">
+				<div><small>Releases</small><strong>Official masters and cover records</strong></div>
+				<div><small>Lyrics</small><strong>Approved writing and performance sheets</strong></div>
+				<div><small>Demos</small><strong>Selected works in progress</strong></div>
+				<div><small>Credits</small><strong>Production, writing, and visual contributors</strong></div>
+			</div>
+		</div>
+	</section>
+
+	<ContactBand title="For music, booking, or production conversations." />
+</HouseLayout>

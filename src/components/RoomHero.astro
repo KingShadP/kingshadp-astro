@@ -1,0 +1,74 @@
+---
+interface Action {
+	label: string;
+	href: string;
+	primary?: boolean;
+}
+
+interface Props {
+	humanTitle?: string;
+	title: string;
+	kicker?: string;
+	copy: string;
+	background: string;
+	align?: "left" | "center" | "right";
+	actions?: Action[];
+	priority?: boolean;
+	nextLabel?: string;
+	compact?: boolean;
+}
+
+const {
+	humanTitle,
+	title,
+	kicker,
+	copy,
+	background,
+	align = "left",
+	actions = [],
+	priority = true,
+	nextLabel = "Explore the room",
+	compact = false,
+} = Astro.props;
+
+const baseName = background.split("/").at(-1);
+const mobileBase = `/images/backgrounds/mobile/${baseName}-mobile`;
+---
+
+<section class:list={["room-hero", `room-hero--${align}`, { "room-hero--compact": compact }]}>
+	<picture class="room-hero__media" aria-hidden="true">
+		<source media="(max-width: 767px)" type="image/avif" srcset={`${mobileBase}.avif`} />
+		<source media="(max-width: 767px)" type="image/webp" srcset={`${mobileBase}.webp`} />
+		<source type="image/avif" srcset={`${background}.avif`} />
+		<img
+			src={`${background}.webp`}
+			alt=""
+			loading={priority ? "eager" : "lazy"}
+			decoding="async"
+			fetchpriority={priority ? "high" : "auto"}
+		/>
+	</picture>
+	<div class="room-hero__shade" aria-hidden="true"></div>
+	<div class="room-hero__mist" aria-hidden="true"></div>
+
+	<div class="room-hero__inner">
+		<div class="room-hero__copy">
+			{humanTitle && <p class="room-human-title">{humanTitle}</p>}
+			{kicker && <p class="room-kicker">{kicker}</p>}
+			<h1>{title}</h1>
+			<p class="room-description">{copy}</p>
+			{actions.length > 0 && (
+				<div class="room-actions">
+					{actions.map((action) => (
+						<a class:list={["button", { "button--primary": action.primary }]} href={action.href}>{action.label}</a>
+					))}
+				</div>
+			)}
+		</div>
+	</div>
+
+	<a class="room-peek" href="#room-content">
+		<span>{nextLabel}</span>
+		<i aria-hidden="true"></i>
+	</a>
+</section>

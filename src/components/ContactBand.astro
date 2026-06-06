@@ -1,0 +1,22 @@
+---
+import { contactEmail } from "../data/house";
+
+interface Props {
+	title?: string;
+	copy?: string;
+}
+
+const {
+	title = "Bring the right conversation to the house.",
+	copy = "For music collaboration, press, booking, visuals, creative direction, partnerships, or serious inquiries.",
+} = Astro.props;
+---
+
+<section class="contact-band">
+	<div>
+		<p>Contact KingShadP</p>
+		<h2>{title}</h2>
+		<span>{copy}</span>
+	</div>
+	<a class="button button--primary" href={`mailto:${contactEmail}`}>Email KingShadP</a>
+</section>

@@ -1,0 +1,89 @@
+---
+import HouseLayout from "../layouts/HouseLayout.astro";
+import RoomHero from "../components/RoomHero.astro";
+import SectionHeading from "../components/SectionHeading.astro";
+import ContactBand from "../components/ContactBand.astro";
+import { backgrounds, capabilities } from "../data/house";
+---
+
+<HouseLayout
+	title="About KingShadP | Official Profile and Capabilities"
+	description="The official profile of KingShadP: artist, writer, visual director, identity builder, and creator of the house."
+	image="/images/backgrounds/bg-about.webp"
+>
+	<RoomHero
+		humanTitle="About KingShadP"
+		kicker="Artist, writer, and builder"
+		title="About"
+		copy="A direct account of who KingShadP is, what he makes, and how the work across sound, image, writing, and objects connects."
+		background={backgrounds.about}
+		actions={[
+			{ label: "Read the Profile", href: "#official-profile", primary: true },
+			{ label: "View Capabilities", href: "#capabilities" },
+			{ label: "Contact", href: "/contact" },
+		]}
+		nextLabel="Read the official profile"
+	/>
+
+	<section class="content-section" id="room-content">
+		<div class="section-inner bio-grid" id="official-profile">
+			<figure class="bio-portrait">
+				<img src="/images/kingshad3.png" alt="KingShadP official portrait" />
+			</figure>
+			<div class="bio-copy">
+				<p class="feature-label">Official Profile</p>
+				<h2>KingShadP Builds Across Mediums Without Losing the Center.</h2>
+				<p>
+					KingShadP is an artist and creative director working through music, image, writing,
+					identity, garments, artifacts, and digital environments. The music is the center.
+					The surrounding rooms give the sound a visible and written record.
+				</p>
+				<p>
+					The work is interested in authority, vulnerability, discipline, myth, presentation,
+					and the pressure of becoming legible before the full body of work is complete. The
+					house exists to organize that growth in public without pretending every idea has
+					reached its final form.
+				</p>
+				<p>
+					For investors, partners, press, collaborators, and audiences, the point is simple:
+					the work can be inspected. Music can be heard. Images can be seen. writing can be
+					read. Concepts are labeled honestly. The next step is clear.
+				</p>
+
+				<div class="capability-list" id="capabilities">
+					{capabilities.map((capability, index) => (
+						<div><span>{String(index + 1).padStart(2, "0")}</span><strong>{capability}</strong></div>
+					))}
+				</div>
+
+				<div class="document-links">
+					<a href="/uploads/kingshadp-official-intelligence-book.pdf">
+						<small>Written profile / PDF</small>
+						<strong>Official Intelligence Book</strong>
+					</a>
+					<a href="/uploads/kingshadp-official-intelligence-visual.pdf">
+						<small>Visual profile / PDF</small>
+						<strong>Official Intelligence Visual</strong>
+					</a>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section class="content-section content-section--soft">
+		<div class="section-inner">
+			<SectionHeading
+				label="Working Standard"
+				title="Finished Work, Clear Status, Direct Language"
+				copy="The house separates released work, active development, concepts, and archive material so visitors know exactly what they are seeing."
+			/>
+			<div class="music-notes">
+				<article><span>01</span><h3>Make the work</h3><p>Music and finished creative output remain more important than decorative mythology.</p></article>
+				<article><span>02</span><h3>Show the record</h3><p>Campaigns, writing, symbols, and objects reveal the range without blurring their status.</p></article>
+				<article><span>03</span><h3>Invite the right contact</h3><p>Every serious visitor can understand where to go next and how to reach KingShadP.</p></article>
+			</div>
+		</div>
+	</section>
+
+	<ContactBand title="Read the work, then bring a specific conversation." />
+</HouseLayout>

@@ -1,0 +1,79 @@
+---
+import HouseLayout from "../layouts/HouseLayout.astro";
+import RoomHero from "../components/RoomHero.astro";
+import SectionHeading from "../components/SectionHeading.astro";
+import FilterBar from "../components/FilterBar.astro";
+import ContactBand from "../components/ContactBand.astro";
+import { backgrounds, drops } from "../data/house";
+
+const filters = ["All", ...new Set(drops.map((drop) => drop.type))];
+---
+
+<HouseLayout
+	title="Drops | KingShadP Garments and Artifacts"
+	description="The KingShadP Drop Vault: garment concepts, artifacts, packaging, collectibles, and objects in development."
+	image="/images/backgrounds/bg-drops.webp"
+>
+	<RoomHero
+		humanTitle="Drop Vault"
+		kicker="Garments, artifacts, and limited objects"
+		title="Drops"
+		copy="A working record of house objects: what exists, what is being developed, and what remains in the archive."
+		background={backgrounds.drops}
+		align="right"
+		actions={[
+			{ label: "Browse Objects", href: "#drop-archive", primary: true },
+			{ label: "View Garment Work", href: "/visuals" },
+			{ label: "Discuss a Partnership", href: "/contact" },
+		]}
+		nextLabel="Open the object record"
+	/>
+
+	<section class="content-section" id="room-content">
+		<div class="section-inner" id="drop-archive">
+			<SectionHeading
+				label="Object Record"
+				title="Current Concepts and Artifacts"
+				copy="Status is stated plainly. Concepts are not presented as released products, and archived studies remain available as part of the design record."
+			/>
+			<FilterBar filters={filters} target="drops" />
+			<div class="drops-grid" data-filter-group="drops">
+				{drops.map((drop) => (
+					<article class="drop-card" data-category={drop.type}>
+						<figure><img src={drop.image} alt={drop.name} loading="lazy" /></figure>
+						<div class="drop-card__body">
+							<div class="drop-card__top">
+								<span>{drop.type}</span>
+								<span class="status">{drop.status}</span>
+							</div>
+							<h2>{drop.name}</h2>
+							<p>{drop.description}</p>
+							<p><strong>House meaning:</strong> {drop.meaning}</p>
+						</div>
+					</article>
+				))}
+			</div>
+		</div>
+	</section>
+
+	<section class="content-section content-section--soft">
+		<div class="section-inner">
+			<SectionHeading
+				label="Release Standard"
+				title="Nothing Appears Finished Before It Is"
+				copy="Every object moves through concept, development, proof, production, and release. The site will show the correct stage."
+			/>
+			<div class="release-ledger release-ledger--large">
+				<div><small>Concept</small><strong>Form, purpose, and mark placement</strong></div>
+				<div><small>Development</small><strong>Material, sizing, production, and proofing</strong></div>
+				<div><small>Release</small><strong>Inventory, price, delivery, and support</strong></div>
+				<div><small>Archive</small><strong>Retired or reference-only design record</strong></div>
+			</div>
+		</div>
+	</section>
+
+	<ContactBand
+		title="For product, manufacturing, retail, and collaboration inquiries."
+		copy="The vault is a design record today. Use the contact room for serious production or partnership conversations."
+	/>
+</HouseLayout>

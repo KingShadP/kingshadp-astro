@@ -1,0 +1,68 @@
+---
+import HouseLayout from "../layouts/HouseLayout.astro";
+import RoomHero from "../components/RoomHero.astro";
+import SectionHeading from "../components/SectionHeading.astro";
+import { backgrounds, contactEmail, inquiryTypes } from "../data/house";
+---
+
+<HouseLayout
+	title="Contact KingShadP | Press, Booking, Collaboration, and Partnerships"
+	description="Contact KingShadP for music collaboration, press, booking, visuals, creative direction, partnerships, investment attention, and serious inquiries."
+	image="/images/backgrounds/bg-contact.webp"
+>
+	<RoomHero
+		humanTitle="Contact"
+		kicker="Clear subject. Direct message."
+		title="Contact"
+		copy="For press, booking, music collaboration, visual work, creative direction, partnerships, investment attention, and serious inquiries."
+		background={backgrounds.contact}
+		actions={[
+			{ label: "Email KingShadP", href: `mailto:${contactEmail}`, primary: true },
+			{ label: "Choose Inquiry Type", href: "#inquiries" },
+			{ label: "Read About", href: "/about" },
+		]}
+		nextLabel="Choose the reason for contact"
+	/>
+
+	<section class="content-section" id="room-content">
+		<div class="section-inner" id="inquiries">
+			<SectionHeading
+				label="Inquiry Directory"
+				title="Start With the Subject"
+				copy="Choose the closest reason for contact. Each link opens an email with a clear subject line so the message can be handled correctly."
+			/>
+			<div class="contact-options">
+				{inquiryTypes.map((type, index) => (
+					<a href={`mailto:${contactEmail}?subject=${encodeURIComponent(type)}%20Inquiry`}>
+						<span>{String(index + 1).padStart(2, "0")}</span>
+						<strong>{type}</strong>
+					</a>
+				))}
+			</div>
+
+			<div class="contact-direct">
+				<div>
+					<p>Direct email</p>
+					<a href={`mailto:${contactEmail}`}>{contactEmail}</a>
+				</div>
+				<a class="button button--primary" href={`mailto:${contactEmail}?subject=KingShadP%20Inquiry`}>Write the Message</a>
+			</div>
+		</div>
+	</section>
+
+	<section class="content-section content-section--soft">
+		<div class="section-inner">
+			<SectionHeading
+				label="Useful Message"
+				title="Include What Matters"
+				copy="A useful inquiry states who you are, what you are proposing, what you need from KingShadP, the timing, and the available budget or terms."
+			/>
+			<div class="release-ledger release-ledger--large">
+				<div><small>Identity</small><strong>Your name, company, publication, or project</strong></div>
+				<div><small>Request</small><strong>The exact collaboration, booking, feature, or decision</strong></div>
+				<div><small>Timing</small><strong>Key dates, deadlines, and expected response window</strong></div>
+				<div><small>Terms</small><strong>Budget, rights, deliverables, location, and next step</strong></div>
+			</div>
+		</div>
+	</section>
+</HouseLayout>

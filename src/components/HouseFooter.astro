@@ -1,0 +1,18 @@
+---
+import { contactEmail, houseRoutes } from "../data/house";
+const year = new Date().getFullYear();
+---
+
+<footer class="house-footer">
+	<div class="footer-mark">
+		<img src="/images/00_SOURCE_EXTRACTED_TRANSPARENT_SP_OVER_SIGNATURE.png" alt="KingShadP" loading="lazy" />
+		<p>Music. Image. Story. World.</p>
+	</div>
+	<nav aria-label="Footer navigation">
+		{houseRoutes.map((item) => <a href={item.href}>{item.label}</a>)}
+	</nav>
+	<div class="footer-contact">
+		<a href={`mailto:${contactEmail}`}>{contactEmail}</a>
+		<p>© {year} KingShadP. All rights reserved.</p>
+	</div>
+</footer>

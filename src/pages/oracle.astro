@@ -1,0 +1,87 @@
+---
+import HouseLayout from "../layouts/HouseLayout.astro";
+import RoomHero from "../components/RoomHero.astro";
+import SectionHeading from "../components/SectionHeading.astro";
+import FilterBar from "../components/FilterBar.astro";
+import ContactBand from "../components/ContactBand.astro";
+import { backgrounds, oracleEntries } from "../data/house";
+
+const featured = oracleEntries.find((entry) => entry.featured) ?? oracleEntries[0];
+const filters = ["All", ...new Set(oracleEntries.map((entry) => entry.type))];
+---
+
+<HouseLayout
+	title="Oracle | KingShadP Writing and Creative Record"
+	description="Statements, lyrics, fragments, documents, and creative philosophy from the KingShadP Oracle."
+	image="/images/backgrounds/bg-oracle.webp"
+>
+	<RoomHero
+		humanTitle="Oracle"
+		kicker="Writing, statements, and the internal record"
+		title="Oracle"
+		copy="The written room holds lyrics, statements, fragments, documents, and the ideas that govern the work."
+		background={backgrounds.oracle}
+		align="center"
+		actions={[
+			{ label: "Read Current Statement", href: "#current-statement", primary: true },
+			{ label: "Browse Entries", href: "#oracle-entries" },
+			{ label: "Open Intelligence Book", href: "/uploads/kingshadp-official-intelligence-book.pdf" },
+		]}
+		nextLabel="Read what the house records"
+	/>
+
+	<section class="content-section content-section--soft" id="room-content">
+		<div class="section-inner oracle-preview" id="current-statement">
+			<p class="feature-label">{featured.type} / {featured.date}</p>
+			<blockquote>“{featured.excerpt}”</blockquote>
+			<p>{featured.title}</p>
+		</div>
+	</section>
+
+	<section class="content-section" id="oracle-entries">
+		<div class="section-inner">
+			<SectionHeading
+				label="Written Archive"
+				title="Entries From the Oracle"
+				copy="Short records can grow into lyrics, essays, release notes, or official documents while remaining searchable by type."
+			/>
+			<FilterBar filters={filters} target="oracle" />
+			<div class="oracle-list" data-filter-group="oracle">
+				{oracleEntries.map((entry) => (
+					<article class="oracle-entry" data-category={entry.type}>
+						<small>{entry.type}<br />{entry.date}</small>
+						<div>
+							<h3>{entry.title}</h3>
+							<p>{entry.excerpt}</p>
+						</div>
+						<div class="oracle-tags">
+							{entry.tags.map((tag) => <span>{tag}</span>)}
+						</div>
+					</article>
+				))}
+			</div>
+		</div>
+	</section>
+
+	<section class="content-section content-section--soft">
+		<div class="section-inner">
+			<SectionHeading
+				label="Official Documents"
+				title="Long-Form Records"
+				copy="Two source documents preserve the longer written and visual intelligence behind KingShadP."
+			/>
+			<div class="document-links">
+				<a href="/uploads/kingshadp-official-intelligence-book.pdf">
+					<small>PDF / Written record</small>
+					<strong>Official Intelligence Book</strong>
+				</a>
+				<a href="/uploads/kingshadp-official-intelligence-visual.pdf">
+					<small>PDF / Visual record</small>
+					<strong>Official Intelligence Visual</strong>
+				</a>
+			</div>
+		</div>
+	</section>
+
+	<ContactBand title="For publishing, interview, lyric, and writing inquiries." />
+</HouseLayout>

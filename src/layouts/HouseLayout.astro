@@ -1,0 +1,29 @@
+---
+import BaseHead from "../components/BaseHead.astro";
+import HouseHeader from "../components/HouseHeader.astro";
+import HouseFooter from "../components/HouseFooter.astro";
+
+interface Props {
+	title: string;
+	description: string;
+	image?: string;
+	pageClass?: string;
+}
+
+const { title, description, image, pageClass = "" } = Astro.props;
+---
+
+<!doctype html>
+<html lang="en">
+	<head>
+		<BaseHead title={title} description={description} image={image} />
+	</head>
+	<body class={pageClass}>
+		<a class="skip-link" href="#main-content">Skip to content</a>
+		<HouseHeader />
+		<main id="main-content">
+			<slot />
+		</main>
+		<HouseFooter />
+	</body>
+</html>

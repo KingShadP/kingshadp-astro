@@ -1,0 +1,79 @@
+---
+import HouseLayout from "../layouts/HouseLayout.astro";
+import RoomHero from "../components/RoomHero.astro";
+import SectionHeading from "../components/SectionHeading.astro";
+import ContactBand from "../components/ContactBand.astro";
+import { backgrounds, symbols } from "../data/house";
+---
+
+<HouseLayout
+	title="The World | KingShadP Symbols and House Rules"
+	description="The official KingShadP symbol system: Giragon, SP Crest, signature, color language, meanings, usage, and rules."
+	image="/images/backgrounds/bg-world.webp"
+>
+	<RoomHero
+		humanTitle="The World"
+		kicker="Symbols must earn their meaning"
+		title="World"
+		copy="Giragon, SP Crest, signature, color, and house rules. This room explains what the marks mean and how they should be used."
+		background={backgrounds.world}
+		align="right"
+		actions={[
+			{ label: "Meet the Giragon", href: "#symbols", primary: true },
+			{ label: "Read House Rules", href: "#house-rules" },
+			{ label: "View Visual Use", href: "/visuals" },
+		]}
+		nextLabel="Read the symbol system"
+	/>
+
+	<section class="content-section" id="room-content">
+		<div class="section-inner">
+			<SectionHeading
+				label="Official Symbol System"
+				title="Three Marks. Three Jobs."
+				copy="The creature, crest, and signature are not interchangeable decoration. Each carries a different level of authority and personal presence."
+			/>
+		</div>
+		<div class="symbol-list" id="symbols">
+			{symbols.map((symbol) => (
+				<article class="symbol-row">
+					<div class="symbol-visual">
+						<img src={symbol.image} alt={symbol.name} loading="lazy" />
+					</div>
+					<div class="symbol-copy">
+						<h2>{symbol.name}</h2>
+						<div class="symbol-facts">
+							<div><strong>Meaning</strong><p>{symbol.meaning}</p></div>
+							<div><strong>Use</strong><p>{symbol.usage}</p></div>
+							<div><strong>Rule</strong><p>{symbol.rules}</p></div>
+						</div>
+					</div>
+				</article>
+			))}
+		</div>
+	</section>
+
+	<section class="content-section content-section--soft" id="house-rules">
+		<div class="section-inner">
+			<SectionHeading
+				label="House Rules"
+				title="Restraint Gives the Marks Force"
+				copy="The identity becomes weaker when every symbol, crown, glow, and phrase appears at once."
+			/>
+			<div class="music-notes">
+				<article><span>01</span><h3>One lead mark</h3><p>Choose the Giragon, crest, or signature as the lead. Supporting marks stay quiet.</p></article>
+				<article><span>02</span><h3>Space is required</h3><p>Do not crowd the marks with copy, borders, or repeated metallic effects.</p></article>
+				<article><span>03</span><h3>Music remains central</h3><p>The world gives the music context. It cannot become a substitute for finished work.</p></article>
+			</div>
+			<div class="palette-strip" aria-label="KingShadP house colors">
+				<div style="--swatch:#050505"><span>Obsidian</span><small>#050505</small></div>
+				<div style="--swatch:#f5eee8"><span>House Paper</span><small>#F5EEE8</small></div>
+				<div style="--swatch:#d99a70"><span>Rose Gold</span><small>#D99A70</small></div>
+				<div style="--swatch:#9f1e39"><span>House Wine</span><small>#9F1E39</small></div>
+				<div style="--swatch:#d7ff31"><span>Signal Lime</span><small>#D7FF31</small></div>
+			</div>
+		</div>
+	</section>
+
+	<ContactBand title="For identity use, licensing, partnerships, and official materials." />
+</HouseLayout>

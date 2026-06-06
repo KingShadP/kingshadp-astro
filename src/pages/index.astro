@@ -1,556 +1,223 @@
 ---
-import BaseHead from "../components/BaseHead.astro";
-import { SITE_DESCRIPTION, SITE_TITLE } from "../consts";
-import { bootMessages, mediaPool, rooms, site } from "../data/livingArchive";
+import HouseLayout from "../layouts/HouseLayout.astro";
+import RoomHero from "../components/RoomHero.astro";
+import SectionHeading from "../components/SectionHeading.astro";
+import ContactBand from "../components/ContactBand.astro";
+import {
+	backgrounds,
+	drops,
+	houseRoutes,
+	oracleEntries,
+	symbols,
+	visualItems,
+} from "../data/house";
 
-const firstRoom = rooms[0];
-const firstScene = firstRoom.scenes[0];
-const archivePayload = JSON.stringify({ site, rooms, bootMessages, mediaPool });
-const mediaLoop = mediaPool;
+const featuredVisual = visualItems[0];
+const featuredOracle = oracleEntries.find((entry) => entry.featured) ?? oracleEntries[0];
 ---
 
-<!doctype html>
-<html lang="en">
-	<head>
-		<BaseHead title={SITE_TITLE} description={SITE_DESCRIPTION} image="/images/signature-background.png" />
-	</head>
-	<body>
-		<a class="skip-link" href="#scene-title">Skip to main content</a>
-		<main
-			id="archive-app"
-			class={`app-shell scene-${firstScene.tone} room-${firstRoom.id}`}
-			style="--scene: 0; --travel: 0px"
-		>
-			<img class="field-image" src="/images/ChatGPT Image May 25, 2026, 09_56_01 PM.png" alt="" aria-hidden="true" />
-			<img class="ocean-image" src="/images/ocean-descent.png" alt="" aria-hidden="true" />
-			<img class="brand-background brand-background-hall" src="/images/crown-hall-background.png" alt="" aria-hidden="true" />
-			<img class="brand-background brand-background-signature" src="/images/signature-background.png" alt="" aria-hidden="true" />
-			<video class="motion-video" src="/signal-motion.mp4" autoplay muted loop playsinline aria-hidden="true"></video>
-			<audio id="site-audio" src="/audio/liturgy-of-shad-p-web.wav" preload="metadata" loop></audio>
-			<canvas class="signal-canvas" id="signal-canvas" aria-hidden="true"></canvas>
+<HouseLayout
+	title="KingShadP | Music, Visuals, Writing, and the Official Creative House"
+	description="The official house of KingShadP: music, visual campaigns, writing, symbols, artifacts, and direct contact."
+	image="/images/backgrounds/bg-house-hero.webp"
+	pageClass="home-page"
+>
+	<div class="bootloader" data-bootloader>
+		<div class="bootloader__inner">
+			<img src="/images/00_SOURCE_SP_CREST_TRANSPARENT.png" alt="" />
+			<p>KingShadP / The House Is Opening</p>
+			<h2 data-boot-message>Opening Sonic Room</h2>
+			<div class="boot-line" aria-hidden="true"></div>
+			<button type="button" data-skip-boot>Skip opening</button>
+		</div>
+	</div>
 
-			<div class="signal-creature creature-0" id="signal-creature" aria-hidden="true">
-				<video class="giragon-flight" src="/giragon-fly.mp4" autoplay muted loop playsinline></video>
-				<div class="creature-aura"></div>
-				<div class="creature-body">
-					<span class="creature-core"></span>
-					<span class="creature-wing creature-wing-left"></span>
-					<span class="creature-wing creature-wing-right"></span>
-					<span class="creature-tail"></span>
-					<span class="creature-eye"></span>
-				</div>
-			</div>
+	<RoomHero
+		humanTitle="The Official Creative House"
+		kicker="Music first. The world follows."
+		title="KingShadP"
+		copy="Music. Image. Story. World. This is the official home for the releases, visual work, writing, symbols, objects, and active record of KingShadP."
+		background={backgrounds.home}
+		actions={[
+			{ label: "Listen", href: "#featured-music", primary: true },
+			{ label: "View Visuals", href: "/visuals" },
+			{ label: "Read Oracle", href: "/oracle" },
+			{ label: "Contact", href: "/contact" },
+		]}
+		nextLabel="See what exists now"
+	/>
 
-			<div class="cursor-ring" id="cursor-ring" aria-hidden="true">
-				<span class="cursor-orbit"></span>
-				<span class="cursor-signal"><i></i><i></i></span>
-				<span class="cursor-egg"></span>
-				<span class="cursor-text">Hold to listen</span>
-			</div>
-
-			<section class="loader-screen" id="loader-screen" aria-label="Entry">
-				<p class="loader-top">{site.loaderTop}</p>
-				<button class="loader-skip" data-enter>Skip</button>
-				<button class="loader-core" data-enter>
-					<span id="boot-message">{bootMessages[0]}</span>
-					<strong>{site.brand}</strong>
-					<small>Official Archive</small>
-					<i class="loader-dot"></i>
-				</button>
-				<div class="loader-progress" aria-hidden="true"><span id="boot-progress" style="width: 16%"></span></div>
-				<p class="loader-bottom">{site.loaderBottom}</p>
-			</section>
-
-			<header class="site-header">
-				<button class="brand-mark" data-room="home" aria-label="Return to the home room">
-					<span class="brand-sequence" aria-hidden="true">
-						<i>K</i><i>K</i><i>K</i><i>K</i><i>K</i>
-					</span>
-					<span>{site.brand}</span>
-				</button>
-				<nav class="phase-dots" id="phase-dots" aria-label="Scene navigation"></nav>
-				<div class="header-actions">
-					<button class="sound-button" id="sound-toggle">Sound <span>Off</span></button>
-					<button class="motion-button" id="motion-toggle">Motion <span>On</span></button>
-					<button class="menu-button" id="menu-open">Menu</button>
-				</div>
-			</header>
-
-			<section class="menu-overlay" id="menu-overlay" aria-label="Archive menu" aria-hidden="true">
-				<div class="menu-overlay-top">
-					<span>{site.brand}</span>
-					<button id="menu-close">Close</button>
-				</div>
-				<div class="menu-overlay-grid">
-					<div class="menu-statement">
-						<p>Official Archive</p>
-						<h2>Music, visuals, writing, identity, and contact in one living house.</h2>
-						<span>Use the sections to move quickly without losing the atmosphere of the KingShadP world.</span>
-					</div>
-					<div class="menu-room-grid" aria-label="Room index">
-						{rooms.map((room, index) => (
-							<button data-room={room.id} class="menu-room-card">
-								<small>{String(index + 1).padStart(2, "0")}</small>
-								<strong>{room.label}</strong>
-								<span>{room.scenes.length} slides</span>
-							</button>
-						))}
-					</div>
-					<div class="menu-contact">
-						<span>Creative Map</span>
-						<p>Music collaboration / visual direction / writing / press / partnerships</p>
-						<a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a>
-					</div>
-				</div>
-				<p class="menu-footer-mark">KingShadP</p>
-			</section>
-
-			<nav class="room-nav" aria-label="Room navigation">
-				{rooms.map((room) => (
-					<button class={room.id === firstRoom.id ? "is-active" : ""} data-room={room.id}>
-						<span>{room.shortLabel}</span>
-					</button>
+	<section class="content-section" id="room-content">
+		<div class="section-inner">
+			<SectionHeading
+				label="House Directory"
+				title="What Exists Now"
+				copy="Seven rooms hold the current body of work. Enter by medium, subject, or intent."
+			/>
+			<nav class="house-map" aria-label="Explore the KingShadP house">
+				{houseRoutes.map((route, index) => (
+					<a href={route.href}>
+						<small>{String(index + 1).padStart(2, "0")} / {route.room}</small>
+						<strong>{route.label}</strong>
+						<span>{route.description}</span>
+					</a>
 				))}
 			</nav>
+		</div>
+	</section>
 
-			<aside class="archive-status-bar" aria-label="Current archive status">
-				<span>Official Archive</span>
-				<span id="status-room">{firstRoom.label}</span>
-				<span id="status-scene">{firstScene.label}</span>
-				<span id="status-count">01 / 05</span>
-			</aside>
-
-			<section class="phase-stage" aria-live="polite">
-				<p class="room-kicker" id="room-kicker">{firstRoom.label}</p>
-				<p class="phase-legend" id="scene-whisper">{firstScene.whisper}</p>
-
-				<div class="phase-content">
-					<span class="phase-caption" id="scene-label">{firstScene.label}</span>
-					<h1 id="scene-title">
-						{firstScene.title.map((line, index) => (
-							<span style={`--word-delay: ${index * 90}ms`}>{line}</span>
-						))}
-					</h1>
-					<p id="scene-copy">{firstScene.copy}</p>
-					<button class="focus-button" id="focus-next">{firstScene.cta}</button>
-				</div>
-
-				<aside class="stat-panel" aria-label="Signal status">
-					<strong id="scene-depth">{firstScene.depth}</strong>
-					<span id="scene-signal">Archive signal</span>
-					<div class="intelligence-panel" id="intelligence-panel" hidden aria-label="Official intelligence documents">
-						<small>Available documents</small>
-						<a href="/uploads/kingshadp-official-intelligence-visual.pdf" target="_blank" rel="noreferrer">
-							<span>Official Intelligence</span>
-							<em>Visual dossier / 15 pages</em>
-						</a>
-						<a href="/uploads/kingshadp-official-intelligence-book.pdf" target="_blank" rel="noreferrer">
-							<span>Intelligence Book</span>
-							<em>Text edition / 25 pages</em>
-						</a>
-					</div>
-					<div class="capability-panel" id="capability-panel" hidden aria-label="Creative capabilities">
-						<small>Creative capabilities</small>
-						<div class="capability-row"><span>Music Creation</span><em>Hooks, lyrics, vocal direction, sonic atmosphere, and release identity.</em></div>
-						<div class="capability-row"><span>Brand Worldbuilding</span><em>Symbols, rules, language, visual codes, and story structure.</em></div>
-						<div class="capability-row"><span>Visual Direction</span><em>Campaign concepts, editorial imagery, product visuals, and black-marble composition.</em></div>
-						<div class="capability-row"><span>Storytelling</span><em>Bios, lore, manifestos, press language, and emotionally grounded writing.</em></div>
-						<div class="capability-row"><span>Digital Experience</span><em>Interactive archives, room-by-room direction, motion, and UX content.</em></div>
-						<div class="capability-row"><span>Artifact Direction</span><em>Product concepts, packaging language, limited-release framing, and ritual.</em></div>
-					</div>
-					<ul id="scene-proof">
-						{firstScene.proof.map((item, index) => <li style={`--chip-index: ${index}`}>{item}</li>)}
-					</ul>
-				</aside>
-
-				<div class="phase-controls" aria-label="Previous and next scene">
-					<button id="prev-scene" disabled aria-label="Previous scene">
-						<svg viewBox="0 0 16 24" aria-hidden="true"><path d="M12 3 4 12l8 9"></path></svg>
-					</button>
-					<button id="next-scene" aria-label="Next scene">
-						<svg viewBox="0 0 16 24" aria-hidden="true"><path d="m4 3 8 9-8 9"></path></svg>
-					</button>
-				</div>
-			</section>
-
-			<section class="home-proof-dock" aria-label="Homepage quick paths">
-				<article class="home-proof-card home-proof-card-primary">
-					<span>Latest Music</span>
-					<strong>Music is the pulse.</strong>
-					<p>Releases, demos, lyrics, videos, and behind-the-song notes need to sit near the front of the archive.</p>
-					<div>
-						<button data-room="media">Open music</button>
-						<a href="https://www.youtube.com/" target="_blank" rel="noreferrer">YouTube</a>
-					</div>
-				</article>
-				<article class="home-proof-card">
-					<span>Press / Partners</span>
-					<strong>Official materials.</strong>
-					<p>One-sheet, approved visuals, artist facts, press contact, and partner-ready context belong here before the long documents.</p>
-					<div>
-						<button data-room="about">View about</button>
-						<a href={`mailto:${site.contactEmail}`}>Contact</a>
-					</div>
-				</article>
-				<article class="home-proof-card">
-					<span>Visual World</span>
-					<strong>Symbols with restraint.</strong>
-					<p>Giragon, SP crest, signature marks, campaign images, and artifact studies should read as one controlled visual system.</p>
-					<div>
-						<button data-room="brand">Open world</button>
-						<button data-room="media">View visuals</button>
-					</div>
-				</article>
-			</section>
-
-			<section class="media-infinity" id="media-infinity" aria-label="Endless media pool">
-				<div class="media-pool" id="media-pool">
-					{mediaLoop.map((item, index) => (
-						<article class={`media-tile media-${item.shape} ${!item.label && !item.meta ? "media-plain" : ""}`} style={`--tile-index: ${index}`}>
-							<div class="media-frame">
-								{item.type === "video" ? (
-									<video src={item.src} autoplay muted loop playsinline></video>
-								) : (
-									<img src={item.src} alt={item.label || ""} loading={index < 4 ? "eager" : "lazy"} aria-hidden={!item.label ? "true" : undefined} />
-								)}
-							</div>
-							{(item.label || item.meta) && (
-								<div class="media-tile-caption">
-									{item.label && <strong>{item.label}</strong>}
-									{item.meta && <span>{item.meta}</span>}
-								</div>
-							)}
-						</article>
-					))}
-				</div>
-				<div class="media-pool-shadow" aria-hidden="true"></div>
-			</section>
-
-			<div class="progress-rail" aria-hidden="true"><span id="progress-rail" style="height: 20%"></span></div>
-
-			<div class="scroll-prompt" aria-hidden="true">
-				<span></span>
-				<p>Scroll to discover</p>
+	<section class="content-section content-section--soft" id="featured-music">
+		<div class="section-inner music-feature">
+			<div class="music-cover">
+				<video autoplay muted loop playsinline poster="/images/giragon.png">
+					<source src="/signal-motion.mp4" type="video/mp4" />
+				</video>
 			</div>
+			<div class="music-copy">
+				<p>Featured Sound / 2026</p>
+				<h2>The Liturgy of Shad P I</h2>
+				<span>
+					A house statement in sound. The piece sets the tone for everything around it:
+					composed, ceremonial, direct, and built to carry weight without explanation.
+				</span>
+				<audio class="audio-player" controls preload="metadata">
+					<source src="/audio/liturgy-of-shad-p-web.wav" type="audio/wav" />
+				</audio>
+				<div class="text-links">
+					<a href="/music">Enter the Sonic Room</a>
+					<a href="/oracle">Read the written record</a>
+				</div>
+			</div>
+		</div>
+	</section>
 
-			<footer class="site-footer">
-				<span>© KingShadP 2026</span>
-				<a href={`mailto:${site.contactEmail}`}>{site.contactEmail}</a>
-			</footer>
-		</main>
+	<section class="content-section">
+		<div class="section-inner visual-feature">
+			<figure>
+				<img src={featuredVisual.image} alt="KingShadP Giragon Collection campaign" loading="lazy" />
+			</figure>
+			<div class="feature-copy">
+				<p class="feature-label">Visual Room / Featured Campaign</p>
+				<h2>{featuredVisual.title}</h2>
+				<p>{featuredVisual.description} The full room holds editorial, garment, symbol, campaign, and artifact studies.</p>
+				<div class="text-links">
+					<a href="/visuals">Open the visual archive</a>
+				</div>
+			</div>
+		</div>
+	</section>
 
-		<script id="archive-data" type="application/json" set:html={archivePayload}></script>
-		<script is:inline>
-			const archive = JSON.parse(document.getElementById("archive-data").textContent);
-			const app = document.getElementById("archive-app");
-			const canvas = document.getElementById("signal-canvas");
-			const ctx = canvas.getContext("2d");
-			const creature = document.getElementById("signal-creature");
-			const cursor = document.getElementById("cursor-ring");
-			const phaseDots = document.getElementById("phase-dots");
-			const roomButtons = Array.from(document.querySelectorAll("[data-room]"));
-			const bootMessage = document.getElementById("boot-message");
-			const bootProgress = document.getElementById("boot-progress");
-			const statusRoom = document.getElementById("status-room");
-			const statusScene = document.getElementById("status-scene");
-			const statusCount = document.getElementById("status-count");
-			const roomKicker = document.getElementById("room-kicker");
-			const sceneWhisper = document.getElementById("scene-whisper");
-			const sceneLabel = document.getElementById("scene-label");
-			const sceneTitle = document.getElementById("scene-title");
-			const sceneCopy = document.getElementById("scene-copy");
-			const focusNext = document.getElementById("focus-next");
-			const sceneDepth = document.getElementById("scene-depth");
-			const sceneSignal = document.getElementById("scene-signal");
-			const sceneProof = document.getElementById("scene-proof");
-			const progressRail = document.getElementById("progress-rail");
-			const prevScene = document.getElementById("prev-scene");
-			const nextScene = document.getElementById("next-scene");
-			const menuOpen = document.getElementById("menu-open");
-			const menuClose = document.getElementById("menu-close");
-			const menuOverlay = document.getElementById("menu-overlay");
-			const soundToggle = document.getElementById("sound-toggle");
-			const siteAudio = document.getElementById("site-audio");
-			const motionToggle = document.getElementById("motion-toggle");
-			const intelligencePanel = document.getElementById("intelligence-panel");
-			const capabilityPanel = document.getElementById("capability-panel");
-			const mediaPoolEl = document.getElementById("media-pool");
-			const params = new URLSearchParams(window.location.search);
+	<section class="content-section content-section--soft">
+		<div class="section-inner oracle-preview">
+			<p class="feature-label">Oracle / Current Statement</p>
+			<blockquote>“{featuredOracle.excerpt}”</blockquote>
+			<p>{featuredOracle.title} · {featuredOracle.date}</p>
+			<div class="room-actions">
+				<a class="button" href="/oracle">Read the Oracle</a>
+			</div>
+		</div>
+	</section>
 
-			let activeRoomId = params.get("room") || "home";
-			let active = Math.max(0, Number(params.get("scene") || 0));
-			let travel = 0;
-			let sound = false;
-			let bootStep = 0;
-			let raf = 0;
-			let wheelLocked = false;
-			let mediaScroll = 0;
-			let travelTimer = 0;
-			let startX = 0;
-			let startY = 0;
-			let motionPaused = false;
+	<section class="content-section">
+		<div class="section-inner world-feature">
+			<img src={symbols[0].image} alt="The KingShadP Giragon symbol" loading="lazy" />
+			<div class="feature-copy">
+				<p class="feature-label">The World / Primary Symbol</p>
+				<h2>{symbols[0].name}</h2>
+				<p>{symbols[0].meaning}</p>
+				<div class="text-links">
+					<a href="/world">Read the symbol system</a>
+				</div>
+			</div>
+		</div>
+	</section>
 
-			function currentRoom() {
-				return archive.rooms.find((room) => room.id === activeRoomId) || archive.rooms[0];
+	<section class="content-section content-section--soft">
+		<div class="section-inner">
+			<SectionHeading
+				label="Drop Vault"
+				title="Objects From the House"
+				copy="A working record of garment ideas, presentation pieces, writing objects, and physical studies."
+			/>
+			<div class="artifact-rail">
+				{drops.slice(0, 3).map((drop) => (
+					<article class="artifact-card">
+						<img src={drop.image} alt={drop.name} loading="lazy" />
+						<div>
+							<small>{drop.type} / {drop.status}</small>
+							<h3>{drop.name}</h3>
+						</div>
+					</article>
+				))}
+			</div>
+			<div class="text-links">
+				<a href="/drops">Open the Drop Vault</a>
+			</div>
+		</div>
+	</section>
+
+	<section class="content-section content-section--light">
+		<div class="section-inner feature-split">
+			<div class="feature-media">
+				<img src="/images/kingshad3.png" alt="KingShadP portrait" loading="lazy" />
+			</div>
+			<div class="feature-copy">
+				<p class="feature-label">About KingShadP</p>
+				<h2>Artist. Writer. Builder of the House.</h2>
+				<p>
+					KingShadP works across music, visual direction, writing, identity, garments, and
+					digital space. Every room exists to make the work easier to understand, inspect,
+					and take seriously.
+				</p>
+				<div class="text-links">
+					<a href="/about">Read the official profile</a>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<ContactBand
+		title="The work is public. The right conversations can be direct."
+		copy="Press, booking, music collaboration, visuals, creative direction, partnerships, and serious business inquiries."
+	/>
+</HouseLayout>
+
+<script>
+	const loader = document.querySelector<HTMLElement>("[data-bootloader]");
+	const skip = document.querySelector<HTMLButtonElement>("[data-skip-boot]");
+	const message = document.querySelector<HTMLElement>("[data-boot-message]");
+	const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+	const hasOpened = window.localStorage.getItem("ksp-house-opened") === "1";
+	const messages = [
+		"Opening Sonic Room",
+		"Loading Visual Room",
+		"Opening Oracle",
+		"Verifying Symbols",
+		"House Online",
+	];
+
+	const complete = () => {
+		if (!loader) return;
+		loader.classList.add("is-complete");
+		window.localStorage.setItem("ksp-house-opened", "1");
+		window.setTimeout(() => loader.remove(), 650);
+	};
+
+	if (hasOpened || reducedMotion) {
+		loader?.remove();
+	} else {
+		let index = 0;
+		const interval = window.setInterval(() => {
+			index += 1;
+			if (message && messages[index]) message.textContent = messages[index];
+			if (index >= messages.length - 1) {
+				window.clearInterval(interval);
+				window.setTimeout(complete, 280);
 			}
-
-			function scenes() {
-				return currentRoom().scenes;
-			}
-
-			function markEntered() {
-				localStorage.setItem("ksp-entered", "true");
-				app.classList.add("is-entered");
-			}
-
-			function setTraveling() {
-				app.classList.add("is-traveling");
-				window.clearTimeout(travelTimer);
-				travelTimer = window.setTimeout(() => app.classList.remove("is-traveling"), 520);
-			}
-
-			function drawDots() {
-				phaseDots.innerHTML = scenes().map((scene, index) => (
-					`<button class="${index === active ? "is-active" : ""}" data-scene="${index}" aria-label="Go to scene: ${scene.label}"></button>`
-				)).join("");
-				phaseDots.querySelectorAll("[data-scene]").forEach((button) => {
-					button.addEventListener("click", () => {
-						markEntered();
-						setScene(Number(button.dataset.scene));
-					});
-				});
-			}
-
-			function setScene(index) {
-				const room = currentRoom();
-				const list = scenes();
-				active = Math.max(0, Math.min(index, list.length - 1));
-				const scene = list[active];
-				app.className = `app-shell is-entered scene-${scene.tone} room-${room.id}${motionPaused ? " is-motion-paused" : ""}`;
-				app.style.setProperty("--scene", active);
-				app.style.setProperty("--travel", `${travel}px`);
-				creature.className = `signal-creature creature-${active}`;
-				statusRoom.textContent = room.label;
-				statusScene.textContent = scene.label;
-				statusCount.textContent = `${String(active + 1).padStart(2, "0")} / ${String(list.length).padStart(2, "0")}`;
-				roomKicker.textContent = room.label;
-				sceneWhisper.textContent = scene.whisper;
-				sceneLabel.textContent = scene.label;
-				sceneCopy.textContent = scene.copy;
-				focusNext.textContent = scene.cta;
-				sceneDepth.textContent = scene.depth;
-				sceneSignal.textContent = room.id === "home" ? "Archive signal" : room.shortLabel;
-				sceneTitle.innerHTML = scene.title.map((line, lineIndex) => `<span style="--word-delay: ${lineIndex * 90}ms">${line}</span>`).join("");
-				sceneProof.innerHTML = scene.proof.map((item, itemIndex) => `<li style="--chip-index: ${itemIndex}">${item}</li>`).join("");
-				progressRail.style.height = `${((active + 1) / list.length) * 100}%`;
-				prevScene.disabled = active === 0;
-				nextScene.disabled = active === list.length - 1;
-				intelligencePanel.hidden = room.id !== "literature";
-				capabilityPanel.hidden = room.id !== "about";
-				drawDots();
-				roomButtons.forEach((button) => button.classList.toggle("is-active", button.dataset.room === room.id));
-			}
-
-			function enterRoom(roomId) {
-				activeRoomId = roomId;
-				active = 0;
-				travel += 180;
-				markEntered();
-				closeMenu();
-				setTraveling();
-				setScene(0);
-			}
-
-			function openMenu() {
-				markEntered();
-				menuOverlay.classList.add("is-open");
-				menuOverlay.setAttribute("aria-hidden", "false");
-			}
-
-			function closeMenu() {
-				menuOverlay.classList.remove("is-open");
-				menuOverlay.setAttribute("aria-hidden", "true");
-			}
-
-			function syncMediaPool() {
-				if (!mediaPoolEl) return;
-				const maxOffset = Math.max(mediaPoolEl.scrollHeight - window.innerHeight + 260, 1);
-				const offset = Math.max(0, Math.min(mediaScroll, maxOffset));
-				mediaScroll = offset;
-				mediaPoolEl.style.transform = `translate3d(0, ${-offset}px, 0)`;
-			}
-
-			function setMotionState(paused) {
-				motionPaused = paused;
-				app.classList.toggle("is-motion-paused", motionPaused);
-				motionToggle.querySelector("span").textContent = motionPaused ? "Off" : "On";
-				document.querySelectorAll("video").forEach((video) => {
-					if (motionPaused) {
-						video.pause();
-					} else {
-						video.play().catch(() => {});
-					}
-				});
-				if (motionPaused) {
-					cancelAnimationFrame(raf);
-				} else {
-					cancelAnimationFrame(raf);
-					drawCanvas();
-				}
-			}
-
-			function next() {
-				markEntered();
-				if (active < scenes().length - 1) setScene(active + 1);
-			}
-
-			function prev() {
-				if (active > 0) setScene(active - 1);
-			}
-
-			function resizeCanvas() {
-				const dpr = Math.min(window.devicePixelRatio || 1, 2);
-				canvas.width = Math.floor(window.innerWidth * dpr);
-				canvas.height = Math.floor(window.innerHeight * dpr);
-				canvas.style.width = `${window.innerWidth}px`;
-				canvas.style.height = `${window.innerHeight}px`;
-				ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-			}
-
-			function drawCanvas() {
-				const w = window.innerWidth;
-				const h = window.innerHeight;
-				const time = performance.now() * 0.0008;
-				const depth = active / Math.max(scenes().length - 1, 1);
-				ctx.clearRect(0, 0, w, h);
-				ctx.fillStyle = `rgba(0, 18, 28, ${0.05 + depth * 0.16})`;
-				ctx.fillRect(0, 0, w, h);
-				for (let i = 0; i < 34; i += 1) {
-					const y = ((i / 33) * h + Math.sin(time * 2 + i) * (12 + active * 4)) | 0;
-					ctx.strokeStyle = `rgba(166, 218, 255, ${0.025 + (i % 5) * 0.006 + depth * 0.012})`;
-					ctx.lineWidth = i % 9 === active ? 1.4 : 0.7;
-					ctx.beginPath();
-					ctx.moveTo(0, y);
-					for (let x = 0; x <= w; x += 42) {
-						ctx.lineTo(x, y + Math.sin(x * 0.008 + time * 6 + i * 0.6 + travel * 0.02) * (8 + active * 2.8));
-					}
-					ctx.stroke();
-				}
-				for (let i = 0; i < 90; i += 1) {
-					const x = (Math.sin(i * 12.989 + time * 0.7) * 0.5 + 0.5) * w;
-					const y = ((Math.cos(i * 7.17 + time * 0.55) * 0.5 + 0.5) * h + time * 60 + i * 9 + travel * 0.6) % h;
-					ctx.fillStyle = `rgba(217, 244, 255, ${0.05 + (i % 6) * 0.01})`;
-					ctx.fillRect(x, y, i % 3 === 0 ? 2 : 1, i % 4 === 0 ? 2 : 1);
-				}
-				raf = requestAnimationFrame(drawCanvas);
-			}
-
-			document.querySelectorAll("[data-enter]").forEach((button) => button.addEventListener("click", markEntered));
-			roomButtons.forEach((button) => button.addEventListener("click", () => enterRoom(button.dataset.room)));
-			focusNext.addEventListener("click", next);
-			nextScene.addEventListener("click", next);
-			prevScene.addEventListener("click", prev);
-			menuOpen.addEventListener("click", openMenu);
-			menuClose.addEventListener("click", closeMenu);
-			menuOverlay.addEventListener("click", (event) => {
-				if (event.target === menuOverlay) closeMenu();
-			});
-			soundToggle.addEventListener("click", () => {
-				sound = !sound;
-				if (sound) {
-					siteAudio.volume = 0.72;
-					siteAudio.play().catch(() => {
-						sound = false;
-						soundToggle.querySelector("span").textContent = "Off";
-					});
-				} else {
-					siteAudio.pause();
-				}
-				soundToggle.querySelector("span").textContent = sound ? "On" : "Off";
-			});
-			siteAudio.addEventListener("pause", () => {
-				if (!siteAudio.ended) {
-					sound = false;
-					soundToggle.querySelector("span").textContent = "Off";
-				}
-			});
-			motionToggle.addEventListener("click", () => setMotionState(!motionPaused));
-			window.addEventListener("keydown", (event) => {
-				if (event.key === "Escape") closeMenu();
-				if (event.key === "ArrowDown" || event.key === "ArrowRight") next();
-				if (event.key === "ArrowUp" || event.key === "ArrowLeft") prev();
-			});
-			window.addEventListener("wheel", (event) => {
-				event.preventDefault();
-				markEntered();
-				travel += event.deltaY;
-				setTraveling();
-				if (activeRoomId === "media") {
-					mediaScroll += event.deltaY * 1.25;
-					syncMediaPool();
-					return;
-				}
-				if (wheelLocked || Math.abs(event.deltaY) < 22) return;
-				wheelLocked = true;
-				event.deltaY > 0 ? next() : prev();
-				window.setTimeout(() => { wheelLocked = false; }, 780);
-			}, { passive: false });
-			window.addEventListener("pointermove", (event) => {
-				cursor.style.transform = `translate3d(${event.clientX}px, ${event.clientY}px, 0)`;
-			});
-			window.addEventListener("pointerdown", (event) => {
-				cursor.classList.add("is-holding");
-				if (event.pointerType !== "mouse") {
-					startX = event.clientX;
-					startY = event.clientY;
-				}
-			});
-			window.addEventListener("pointerup", (event) => {
-				cursor.classList.remove("is-holding");
-				if (event.pointerType === "mouse" || !startY) return;
-				const deltaY = startY - event.clientY;
-				const deltaX = startX - event.clientX;
-				startX = 0;
-				startY = 0;
-				if (Math.abs(deltaY) < 46 || Math.abs(deltaY) < Math.abs(deltaX) * 1.2) return;
-				markEntered();
-				travel += deltaY * 4;
-				setTraveling();
-				if (activeRoomId === "media") {
-					mediaScroll += deltaY * 3.4;
-					syncMediaPool();
-					return;
-				}
-				deltaY > 0 ? next() : prev();
-			});
-
-			if (params.has("entered") || localStorage.getItem("ksp-entered") === "true") {
-				app.classList.add("is-entered");
-			} else {
-				const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
-				const stepDelay = reduceMotion ? 120 : 360;
-				const enterDelay = reduceMotion ? 900 : 2600;
-				const bootTimer = window.setInterval(() => {
-					bootStep = Math.min(bootStep + 1, archive.bootMessages.length - 1);
-					bootMessage.textContent = archive.bootMessages[bootStep];
-					bootProgress.style.width = `${Math.round(((bootStep + 1) / archive.bootMessages.length) * 100)}%`;
-				}, stepDelay);
-				window.setTimeout(() => {
-					window.clearInterval(bootTimer);
-					markEntered();
-				}, enterDelay);
-			}
-
-			resizeCanvas();
-			window.addEventListener("resize", resizeCanvas);
-			setScene(active);
-			syncMediaPool();
-			if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-				setMotionState(true);
-			} else {
-				drawCanvas();
-			}
-			console.info("KINGSHADP // THE LIVING ARCHIVE // SIGNAL FOUND.");
-		</script>
-	</body>
-</html>
+		}, 430);
+		skip?.addEventListener("click", () => {
+			window.clearInterval(interval);
+			complete();
+		});
+	}
+</script>

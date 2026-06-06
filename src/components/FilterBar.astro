@@ -1,0 +1,33 @@
+---
+interface Props {
+	filters: string[];
+	target: string;
+}
+
+const { filters, target } = Astro.props;
+---
+
+<div class="filter-bar" data-filter-bar={target} aria-label="Filter archive">
+	{filters.map((filter, index) => (
+		<button type="button" class={index === 0 ? "is-active" : ""} data-filter={filter}>{filter}</button>
+	))}
+</div>
+
+<script>
+	document.querySelectorAll<HTMLElement>("[data-filter-bar]").forEach((bar) => {
+		const target = bar.dataset.filterBar;
+		if (!target) return;
+		const items = document.querySelectorAll<HTMLElement>(`[data-filter-group="${target}"] [data-category]`);
+		bar.querySelectorAll<HTMLButtonElement>("[data-filter]").forEach((button) => {
+			button.addEventListener("click", () => {
+				const filter = button.dataset.filter ?? "All";
+				bar.querySelectorAll("[data-filter]").forEach((item) => item.classList.remove("is-active"));
+				button.classList.add("is-active");
+				items.forEach((item) => {
+					const categories = (item.dataset.category ?? "").split("|");
+					item.hidden = filter !== "All" && !categories.includes(filter);
+				});
+			});
+		});
+	});
+</script>

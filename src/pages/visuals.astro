@@ -1,0 +1,87 @@
+---
+import HouseLayout from "../layouts/HouseLayout.astro";
+import RoomHero from "../components/RoomHero.astro";
+import SectionHeading from "../components/SectionHeading.astro";
+import FilterBar from "../components/FilterBar.astro";
+import ContactBand from "../components/ContactBand.astro";
+import { backgrounds, visualItems } from "../data/house";
+
+const featured = visualItems.find((item) => item.featured) ?? visualItems[0];
+const filters = ["All", ...new Set(visualItems.map((item) => item.category))];
+---
+
+<HouseLayout
+	title="Visuals | KingShadP Visual Room"
+	description="Campaigns, editorial work, garments, symbols, artifacts, and motion from the official KingShadP visual archive."
+	image="/images/backgrounds/bg-visual-room.webp"
+>
+	<RoomHero
+		humanTitle="Visual Room"
+		kicker="Campaigns, image, garment, motion"
+		title="Visuals"
+		copy="The visual record of KingShadP: campaign studies, editorial frames, garment direction, symbols, and moving work."
+		background={backgrounds.visuals}
+		align="center"
+		actions={[
+			{ label: "View Featured Campaign", href: "#featured-campaign", primary: true },
+			{ label: "Browse Archive", href: "#visual-archive" },
+			{ label: "Discuss Visual Work", href: "/contact" },
+		]}
+		nextLabel="Enter the image archive"
+	/>
+
+	<section class="content-section" id="room-content">
+		<div class="section-inner feature-split" id="featured-campaign">
+			<div class="feature-media">
+				<img src={featured.image} alt={`${featured.title} campaign image`} />
+			</div>
+			<div class="feature-copy">
+				<p class="feature-label">Featured Campaign / {featured.year}</p>
+				<h2>{featured.title}</h2>
+				<p>
+					{featured.description} This study establishes a cleaner relationship between artist,
+					garment, and mark: the subject remains human, the product stays visible, and the
+					symbol does not overwhelm the frame.
+				</p>
+				<div class="release-ledger">
+					<div><small>Category</small><strong>{featured.category}</strong></div>
+					<div><small>Focus</small><strong>Giragon apparel language</strong></div>
+					<div><small>Status</small><strong>Active visual direction</strong></div>
+				</div>
+			</div>
+		</div>
+	</section>
+
+	<section class="content-section content-section--soft" id="visual-archive">
+		<div class="section-inner">
+			<SectionHeading
+				label="Visual Archive"
+				title="Campaigns and Studies"
+				copy="Filter the room by the type of work. Each entry can later hold credits, production notes, related products, and full campaign sets."
+			/>
+			<FilterBar filters={filters} target="visuals" />
+			<div class="archive-grid" data-filter-group="visuals">
+				{visualItems.map((item) => (
+					<article class:list={["archive-card", { "archive-card--wide": item.wide }]} data-category={item.category}>
+						<figure>
+							<img src={item.image} alt={item.title} loading="lazy" />
+						</figure>
+						<div class="archive-card__body">
+							<div class="archive-card__meta">
+								<span>{item.category}</span>
+								<span>{item.year}</span>
+							</div>
+							<h3>{item.title}</h3>
+							<p>{item.description}</p>
+						</div>
+					</article>
+				))}
+			</div>
+		</div>
+	</section>
+
+	<ContactBand
+		title="Campaign, garment, motion, and visual direction inquiries."
+		copy="Use the contact room for visual commissions, campaign planning, production, partnerships, or press assets."
+	/>
+</HouseLayout>
