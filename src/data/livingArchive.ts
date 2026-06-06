@@ -2,8 +2,8 @@ export const site = {
 	brand: "KingShadP",
 	domain: "kshadp.com",
 	contactEmail: "kshadp@gmail.com",
-	loaderTop: "Entering the official archive",
-	loaderBottom: "Music, visuals, writing, symbols, and contact in one official home.",
+	loaderTop: "This is King Shad P.",
+	loaderBottom: "Music, visuals, writing, symbols, and worldbuilding in one controlled experience.",
 	loaderSmall: "Listen / watch / read / contact",
 };
 
