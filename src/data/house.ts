@@ -16,6 +16,13 @@ export type ArchiveItem = {
 	wide?: boolean;
 };
 
+export type MusicTrack = {
+	title: string;
+	file: string;
+	type: string;
+	credit?: string;
+};
+
 export const contactEmail = "kshadp@gmail.com";
 
 export const houseRoutes: HouseRoute[] = [
@@ -126,6 +133,16 @@ export const visualItems: ArchiveItem[] = [
 		year: "2026",
 		description: "Formalwear direction using the house palette and symbol system.",
 	},
+];
+
+export const musicTracks: MusicTrack[] = [
+	{ title: "K. I. N. G SHAD SHIT!", file: "/audio/catalog/king-shad-shit.mp3", type: "Visualizer audio" },
+	{ title: "Travel The World", file: "/audio/catalog/travel-the-world.mp3", type: "Visualizer audio" },
+	{ title: "The Pope and I Religiously High", file: "/audio/catalog/the-pope-and-i-religiously-high.mp3", type: "Visualizer audio" },
+	{ title: "RAPSTAR", file: "/audio/catalog/rapstar.mp3", type: "Official audio", credit: "Produced by Beat Demons" },
+	{ title: "Dancing With The Dealer", file: "/audio/catalog/dancing-with-the-dealer.mp3", type: "Visualizer audio" },
+	{ title: "LLC", file: "/audio/catalog/llc.mp3", type: "Visualizer audio" },
+	{ title: "NECESSARY KILLER", file: "/audio/catalog/necessary-killer.mp3", type: "Official audio" },
 ];
 
 export const oracleEntries = [

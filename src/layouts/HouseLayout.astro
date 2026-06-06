@@ -2,6 +2,7 @@
 import BaseHead from "../components/BaseHead.astro";
 import HouseHeader from "../components/HouseHeader.astro";
 import HouseFooter from "../components/HouseFooter.astro";
+import AmbientDrone from "../components/AmbientDrone.astro";
 
 interface Props {
 	title: string;
@@ -21,6 +22,7 @@ const { title, description, image, pageClass = "" } = Astro.props;
 	<body class={pageClass}>
 		<a class="skip-link" href="#main-content">Skip to content</a>
 		<HouseHeader />
+		<AmbientDrone />
 		<main id="main-content">
 			<slot />
 		</main>

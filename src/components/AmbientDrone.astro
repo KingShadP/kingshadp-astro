@@ -1,0 +1,79 @@
+<div class="ambient-drone" data-ambient-drone>
+	<button type="button" aria-pressed="false" title="Play or stop the 65 hertz house drone">
+		<span class="ambient-drone__signal" aria-hidden="true"></span>
+		<span data-drone-label>Drone off</span>
+	</button>
+	<small>65 Hz</small>
+</div>
+
+<script>
+	const drone = document.querySelector<HTMLElement>("[data-ambient-drone]");
+	const button = drone?.querySelector<HTMLButtonElement>("button");
+	const label = drone?.querySelector<HTMLElement>("[data-drone-label]");
+	let context: AudioContext | null = null;
+	let output: GainNode | null = null;
+	let oscillators: OscillatorNode[] = [];
+
+	const stopDrone = () => {
+		if (!context || !output) return;
+		const now = context.currentTime;
+		output.gain.cancelScheduledValues(now);
+		output.gain.setValueAtTime(Math.max(output.gain.value, 0.0001), now);
+		output.gain.exponentialRampToValueAtTime(0.0001, now + 0.45);
+		window.setTimeout(() => {
+			oscillators.forEach((oscillator) => {
+				try { oscillator.stop(); } catch {}
+			});
+			oscillators = [];
+			context?.close();
+			context = null;
+			output = null;
+		}, 500);
+		button?.setAttribute("aria-pressed", "false");
+		drone?.classList.remove("is-playing");
+		if (label) label.textContent = "Drone off";
+	};
+
+	const startDrone = async () => {
+		context = new AudioContext();
+		await context.resume();
+		output = context.createGain();
+		const filter = context.createBiquadFilter();
+		const compressor = context.createDynamicsCompressor();
+		const now = context.currentTime;
+
+		filter.type = "lowpass";
+		filter.frequency.value = 440;
+		filter.Q.value = 0.7;
+		compressor.threshold.value = -28;
+		compressor.knee.value = 18;
+		compressor.ratio.value = 4;
+		output.gain.setValueAtTime(0.0001, now);
+		output.gain.exponentialRampToValueAtTime(0.055, now + 1.2);
+		filter.connect(compressor);
+		compressor.connect(output);
+		output.connect(context.destination);
+
+		[65, 97.5, 130].forEach((frequency, index) => {
+			const oscillator = context!.createOscillator();
+			const voiceGain = context!.createGain();
+			oscillator.type = index === 0 ? "sine" : "triangle";
+			oscillator.frequency.value = frequency;
+			oscillator.detune.value = index === 1 ? -4 : index === 2 ? 3 : 0;
+			voiceGain.gain.value = index === 0 ? 0.72 : index === 1 ? 0.16 : 0.08;
+			oscillator.connect(voiceGain);
+			voiceGain.connect(filter);
+			oscillator.start();
+			oscillators.push(oscillator);
+		});
+
+		button?.setAttribute("aria-pressed", "true");
+		drone?.classList.add("is-playing");
+		if (label) label.textContent = "Drone on";
+	};
+
+	button?.addEventListener("click", () => {
+		if (context) stopDrone();
+		else startDrone().catch(stopDrone);
+	});
+</script>
