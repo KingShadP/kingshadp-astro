@@ -1,0 +1,342 @@
+.house-journey,
+.room-hero {
+	--camera-progress: 0;
+}
+
+.house-journey {
+	height: 600svh;
+}
+
+.house-journey__stage,
+.room-hero__stage {
+	transform-style: preserve-3d;
+	background: var(--void);
+}
+
+.house-journey__plates,
+.room-hero__media {
+	z-index: 0;
+}
+
+.spatial-plate {
+	position: absolute;
+	inset: -4%;
+	display: block;
+	overflow: hidden;
+	will-change: opacity, transform, filter;
+}
+
+.spatial-plate img {
+	width: 100%;
+	height: 100%;
+	display: block;
+	object-fit: cover;
+}
+
+.house-journey__plate {
+	--scene-opacity: 0;
+	--scene-phase: 1;
+	--scene-focus: 0;
+	--scene-push: 0;
+	opacity: var(--scene-opacity);
+	transform:
+		translate3d(
+			calc(var(--scene-phase) * -1.35vw),
+			calc(var(--scene-push) * -1.5vh),
+			0
+		)
+		scale(calc(1.035 + (var(--scene-push) * 0.145)));
+	filter:
+		brightness(calc(0.7 + (var(--scene-focus) * 0.12)))
+		contrast(1.1)
+		saturate(calc(0.88 + (var(--scene-focus) * 0.12)));
+	transition: none;
+}
+
+.house-journey__plate.is-active {
+	opacity: var(--scene-opacity);
+}
+
+.house-journey__plate img {
+	filter: none;
+	transform: scale(calc(1.015 + (var(--scene-focus) * 0.015)));
+}
+
+.room-hero__media {
+	transform:
+		translate3d(
+			calc(var(--room-progress, 0) * -1.45vw),
+			calc(var(--room-progress, 0) * -1.2vh),
+			0
+		)
+		scale(calc(1.035 + (var(--room-progress, 0) * 0.175)));
+	filter:
+		brightness(calc(0.72 + (var(--room-progress, 0) * 0.12)))
+		contrast(1.1);
+	will-change: transform, filter;
+}
+
+.room-hero__media img {
+	transform: none;
+	filter: none;
+	animation: room-bg-load 1600ms var(--ease) both;
+}
+
+.spatial-atmosphere {
+	position: absolute;
+	inset: 0;
+	z-index: 1;
+	overflow: hidden;
+	pointer-events: none;
+}
+
+.spatial-atmosphere > div {
+	position: absolute;
+	pointer-events: none;
+}
+
+.spatial-atmosphere__depth {
+	inset: -5%;
+	background:
+		radial-gradient(circle at 73% 51%, rgba(217, 154, 112, 0.18), transparent 23%),
+		radial-gradient(circle at 18% 72%, rgba(217, 160, 162, 0.1), transparent 30%),
+		linear-gradient(180deg, transparent 42%, rgba(5, 5, 5, 0.24));
+	transform:
+		translate3d(
+			calc(var(--camera-progress, 0) * -1vw),
+			calc(var(--camera-progress, 0) * -3.5vh),
+			20px
+		)
+		scale(calc(1 + (var(--camera-progress, 0) * 0.035)));
+}
+
+.spatial-atmosphere__fog {
+	left: -22%;
+	right: -22%;
+	bottom: -14%;
+	height: 50%;
+	opacity: calc(0.4 + (var(--camera-progress, 0) * 0.12));
+	filter: blur(28px);
+	background:
+		radial-gradient(ellipse at 18% 62%, rgba(232, 237, 241, 0.11), transparent 42%),
+		radial-gradient(ellipse at 68% 44%, rgba(217, 154, 112, 0.2), transparent 47%),
+		radial-gradient(ellipse at 50% 86%, rgba(5, 5, 5, 0.46), transparent 61%);
+	transform:
+		translate3d(
+			calc(var(--camera-progress, 0) * 6vw),
+			calc(var(--camera-progress, 0) * -5vh),
+			40px
+		)
+		scale(calc(1 + (var(--camera-progress, 0) * 0.14)));
+	animation: spatial-fog-drift 14s ease-in-out infinite alternate;
+}
+
+.spatial-atmosphere__light {
+	inset: -12% -20%;
+	opacity: calc(0.13 + (var(--camera-progress, 0) * 0.24));
+	background:
+		linear-gradient(
+			104deg,
+			transparent 0 34%,
+			rgba(217, 154, 112, 0.035) 39%,
+			rgba(217, 154, 112, 0.18) 48%,
+			rgba(217, 154, 112, 0.035) 57%,
+			transparent 64% 100%
+		);
+	transform:
+		translate3d(calc(-18% + (var(--camera-progress, 0) * 38%)), 0, 60px)
+		rotate(-1deg);
+	mix-blend-mode: screen;
+}
+
+.spatial-atmosphere__reflection {
+	left: -3%;
+	right: -3%;
+	bottom: -2%;
+	height: 44%;
+	opacity: calc(0.25 + (var(--camera-progress, 0) * 0.17));
+	background:
+		linear-gradient(180deg, transparent, rgba(217, 154, 112, 0.14)),
+		repeating-linear-gradient(
+			90deg,
+			transparent 0 118px,
+			rgba(217, 154, 112, 0.055) 120px,
+			transparent 123px
+		);
+	transform:
+		translate3d(0, calc(var(--camera-progress, 0) * 4vh), 75px)
+		scaleY(calc(1 + (var(--camera-progress, 0) * 0.2)));
+	filter: blur(0.7px);
+	transform-origin: bottom;
+}
+
+.spatial-atmosphere__aperture {
+	inset: -8%;
+	opacity: calc(0.2 + (var(--camera-progress, 0) * 0.13));
+	background:
+		radial-gradient(
+			ellipse at 72% 51%,
+			transparent 0 22%,
+			rgba(217, 154, 112, 0.08) 23%,
+			transparent 25% 100%
+		);
+	transform: scale(calc(1.08 - (var(--camera-progress, 0) * 0.055)));
+	mix-blend-mode: screen;
+}
+
+.spatial-atmosphere__safety {
+	inset: 0;
+	background:
+		linear-gradient(90deg, rgba(5, 5, 5, 0.91), rgba(5, 5, 5, 0.3) 52%, rgba(5, 5, 5, 0.69)),
+		linear-gradient(180deg, rgba(5, 5, 5, 0.62), transparent 41%, rgba(5, 5, 5, 0.9));
+}
+
+.spatial-atmosphere--right .spatial-atmosphere__safety {
+	background:
+		linear-gradient(270deg, rgba(5, 5, 5, 0.91), rgba(5, 5, 5, 0.3) 52%, rgba(5, 5, 5, 0.69)),
+		linear-gradient(180deg, rgba(5, 5, 5, 0.62), transparent 41%, rgba(5, 5, 5, 0.9));
+}
+
+.spatial-atmosphere--center .spatial-atmosphere__safety {
+	background:
+		linear-gradient(90deg, rgba(5, 5, 5, 0.68), rgba(5, 5, 5, 0.27) 50%, rgba(5, 5, 5, 0.68)),
+		linear-gradient(180deg, rgba(5, 5, 5, 0.62), transparent 40%, rgba(5, 5, 5, 0.9));
+}
+
+.spatial-atmosphere__grain {
+	inset: 0;
+	opacity: 0.12;
+	background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 180 180' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.74' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='.28'/%3E%3C/svg%3E");
+	mix-blend-mode: soft-light;
+}
+
+.house-journey__content,
+.room-hero__inner {
+	position: relative;
+	z-index: 3;
+}
+
+.house-journey__copy {
+	--scene-opacity: 0;
+	--scene-phase: 1;
+	--scene-focus: 0;
+	opacity: var(--scene-opacity);
+	transform:
+		translate3d(0, calc(var(--scene-phase) * -28px), 90px)
+		scale(calc(0.97 + (var(--scene-focus) * 0.03)));
+	transition: none;
+	will-change: opacity, transform;
+}
+
+.house-journey__copy.is-active {
+	opacity: var(--scene-opacity);
+	transform:
+		translate3d(0, calc(var(--scene-phase) * -28px), 90px)
+		scale(calc(0.97 + (var(--scene-focus) * 0.03)));
+}
+
+.journey-room-link {
+	display: inline-flex;
+	align-items: center;
+	min-height: 42px;
+	margin-top: 24px;
+	padding: 0 15px;
+	border: 1px solid rgba(217, 154, 112, 0.62);
+	color: var(--paper);
+	font-size: 10px;
+	font-weight: 760;
+	text-decoration: none;
+	text-transform: uppercase;
+}
+
+.journey-room-link:hover,
+.journey-room-link:focus-visible {
+	border-color: var(--lime);
+	color: var(--lime);
+}
+
+.house-journey__meter,
+.room-peek {
+	z-index: 4;
+}
+
+@keyframes spatial-fog-drift {
+	from {
+		margin-left: -2%;
+	}
+	to {
+		margin-left: 2%;
+	}
+}
+
+@media (max-width: 767px) {
+	.house-journey {
+		height: 390svh;
+	}
+
+	.spatial-plate {
+		inset: -7%;
+	}
+
+	.house-journey__plate {
+		transform:
+			translate3d(0, calc(var(--scene-push) * -0.8vh), 0)
+			scale(calc(1.07 + (var(--scene-push) * 0.085)));
+	}
+
+	.room-hero__media {
+		transform:
+			translate3d(0, calc(var(--room-progress, 0) * -0.7vh), 0)
+			scale(calc(1.07 + (var(--room-progress, 0) * 0.09)));
+	}
+
+	.spatial-atmosphere__fog {
+		height: 40%;
+		opacity: 0.38;
+		filter: blur(22px);
+	}
+
+	.spatial-atmosphere__reflection {
+		height: 33%;
+		opacity: 0.25;
+	}
+
+	.spatial-atmosphere__aperture {
+		display: none;
+	}
+
+	.spatial-atmosphere__safety,
+	.spatial-atmosphere--right .spatial-atmosphere__safety,
+	.spatial-atmosphere--center .spatial-atmosphere__safety {
+		background:
+			linear-gradient(180deg, rgba(5, 5, 5, 0.55), rgba(5, 5, 5, 0.2) 36%, rgba(5, 5, 5, 0.96) 82%);
+	}
+
+	.journey-room-link {
+		margin-top: 18px;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.house-journey {
+		height: 100svh;
+	}
+
+	.house-journey__plate:not(:first-child),
+	.house-journey__copy:not(:first-child) {
+		display: none;
+	}
+
+	.spatial-plate,
+	.spatial-atmosphere > div,
+	.house-journey__copy,
+	.room-hero__copy {
+		animation: none !important;
+		transform: none !important;
+	}
+
+	.house-journey__plate:first-child,
+	.house-journey__copy:first-child {
+		opacity: 1 !important;
+	}
+}

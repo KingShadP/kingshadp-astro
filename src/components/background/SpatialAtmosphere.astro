@@ -1,0 +1,17 @@
+---
+interface Props {
+	align?: "left" | "center" | "right";
+}
+
+const { align = "left" } = Astro.props;
+---
+
+<div class:list={["spatial-atmosphere", `spatial-atmosphere--${align}`]} aria-hidden="true">
+	<div class="spatial-atmosphere__depth"></div>
+	<div class="spatial-atmosphere__fog"></div>
+	<div class="spatial-atmosphere__light"></div>
+	<div class="spatial-atmosphere__reflection"></div>
+	<div class="spatial-atmosphere__aperture"></div>
+	<div class="spatial-atmosphere__safety"></div>
+	<div class="spatial-atmosphere__grain"></div>
+</div>

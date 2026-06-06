@@ -1,4 +1,7 @@
 ---
+import SpatialAtmosphere from "./background/SpatialAtmosphere.astro";
+import SpatialPlate from "./background/SpatialPlate.astro";
+
 interface Action {
 	label: string;
 	href: string;
@@ -31,29 +34,12 @@ const {
 	compact = false,
 } = Astro.props;
 
-const baseName = background.split("/").at(-1);
-const mobileBase = `/images/backgrounds/mobile/${baseName}-mobile`;
 ---
 
 <section class:list={["room-hero", `room-hero--${align}`, { "room-hero--compact": compact }]} data-room-camera>
 	<div class="room-hero__stage">
-		<picture class="room-hero__media" aria-hidden="true">
-			<source media="(max-width: 767px)" type="image/avif" srcset={`${mobileBase}.avif`} />
-			<source media="(max-width: 767px)" type="image/webp" srcset={`${mobileBase}.webp`} />
-			<source type="image/avif" srcset={`${background}.avif`} />
-			<img
-				src={`${background}.webp`}
-				alt=""
-				loading={priority ? "eager" : "lazy"}
-				decoding="async"
-				fetchpriority={priority ? "high" : "auto"}
-			/>
-		</picture>
-		<div class="room-hero__depth" aria-hidden="true"></div>
-		<div class="room-hero__light" aria-hidden="true"></div>
-		<div class="room-hero__reflection" aria-hidden="true"></div>
-		<div class="room-hero__shade" aria-hidden="true"></div>
-		<div class="room-hero__mist" aria-hidden="true"></div>
+		<SpatialPlate background={background} className="room-hero__media" priority={priority} />
+		<SpatialAtmosphere align={align} />
 
 		<div class="room-hero__inner">
 			<div class="room-hero__copy">
@@ -87,6 +73,7 @@ const mobileBase = `/images/backgrounds/mobile/${baseName}-mobile`;
 			const travel = Math.max(1, room.offsetHeight - window.innerHeight);
 			const progress = reduced ? 0 : Math.min(1, Math.max(0, -rect.top / travel));
 			room.style.setProperty("--room-progress", progress.toFixed(4));
+			room.style.setProperty("--camera-progress", progress.toFixed(4));
 		};
 		const requestUpdate = () => {
 			cancelAnimationFrame(frame);
