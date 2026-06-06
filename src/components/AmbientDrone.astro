@@ -76,4 +76,8 @@
 		if (context) stopDrone();
 		else startDrone().catch(stopDrone);
 	});
+
+	document.addEventListener("play", (event) => {
+		if (event.target instanceof HTMLAudioElement && context) stopDrone();
+	}, true);
 </script>

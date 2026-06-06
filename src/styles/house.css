@@ -524,10 +524,17 @@ button {
 
 .room-hero {
 	position: relative;
-	min-height: 96svh;
+	min-height: 165svh;
+	background: var(--void);
+}
+
+.room-hero__stage {
+	position: sticky;
+	top: 0;
+	height: 100svh;
 	overflow: hidden;
 	isolation: isolate;
-	background: var(--void);
+	perspective: 1100px;
 }
 
 .room-hero__media {
@@ -540,7 +547,47 @@ button {
 	width: 100%;
 	height: 100%;
 	object-fit: cover;
+	transform:
+		translate3d(calc(var(--room-progress, 0) * -1.4vw), calc(var(--room-progress, 0) * -1vh), 0)
+		scale(calc(1.04 + (var(--room-progress, 0) * 0.17)));
+	filter: brightness(calc(0.76 + (var(--room-progress, 0) * 0.1))) contrast(1.08);
 	animation: room-bg-load 1600ms var(--ease) both;
+	will-change: transform, filter;
+}
+
+.room-hero__depth,
+.room-hero__light,
+.room-hero__reflection {
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+}
+
+.room-hero__depth {
+	z-index: -3;
+	background:
+		radial-gradient(circle at 72% 52%, rgba(217, 154, 112, 0.15), transparent 25%),
+		radial-gradient(circle at 18% 72%, rgba(217, 160, 162, 0.08), transparent 30%);
+	transform: translateY(calc(var(--room-progress, 0) * -3vh));
+}
+
+.room-hero__light {
+	z-index: -2;
+	opacity: calc(0.14 + (var(--room-progress, 0) * 0.2));
+	background: linear-gradient(105deg, transparent 0 36%, rgba(217, 154, 112, 0.15) 48%, transparent 62%);
+	transform: translateX(calc(-18% + (var(--room-progress, 0) * 36%)));
+	mix-blend-mode: screen;
+}
+
+.room-hero__reflection {
+	inset: auto 0 0;
+	z-index: -1;
+	height: 40%;
+	opacity: 0.34;
+	background:
+		linear-gradient(180deg, transparent, rgba(217, 154, 112, 0.11)),
+		repeating-linear-gradient(90deg, transparent 0 120px, rgba(217, 154, 112, 0.045) 121px, transparent 123px);
+	transform: translateY(calc(var(--room-progress, 0) * 4vh)) scaleY(calc(1 + (var(--room-progress, 0) * 0.16)));
 }
 
 .room-hero__shade {
@@ -599,7 +646,9 @@ button {
 
 .room-hero__copy {
 	width: min(760px, 100%);
-	animation: copy-reveal 900ms var(--ease) 120ms both;
+	transform: translateY(calc(var(--room-progress, 0) * -24px)) scale(calc(1 - (var(--room-progress, 0) * 0.035)));
+	opacity: calc(1 - (var(--room-progress, 0) * 0.2));
+	will-change: transform, opacity;
 }
 
 .room-human-title,
@@ -984,6 +1033,51 @@ button {
 .music-notes p {
 	margin: 0;
 	color: var(--muted);
+}
+
+.track-list {
+	border-top: 1px solid var(--line);
+}
+
+.track-row {
+	display: grid;
+	grid-template-columns: 64px minmax(260px, 1fr) minmax(280px, 420px);
+	gap: 24px;
+	align-items: center;
+	padding: 24px 0;
+	border-bottom: 1px solid var(--line);
+}
+
+.track-row__number {
+	color: var(--lime);
+	font-family: var(--mono);
+	font-size: 10px;
+}
+
+.track-row__title small {
+	color: var(--rose);
+	font-family: var(--mono);
+	font-size: 9px;
+	text-transform: uppercase;
+}
+
+.track-row__title h3 {
+	margin: 5px 0 0;
+	font-family: var(--display);
+	font-size: clamp(26px, 3vw, 44px);
+	font-weight: 520;
+	line-height: 1;
+}
+
+.track-row__title p {
+	margin: 7px 0 0;
+	color: var(--faint);
+	font-size: 12px;
+}
+
+.track-row audio {
+	width: 100%;
+	filter: sepia(0.38) saturate(0.75);
 }
 
 .palette-strip {
@@ -1739,8 +1833,8 @@ button {
 }
 
 @keyframes room-bg-load {
-	from { transform: scale(1.06); opacity: 0.6; }
-	to { transform: scale(1); opacity: 1; }
+	from { opacity: 0.6; }
+	to { opacity: 1; }
 }
 
 @keyframes copy-reveal {
@@ -1756,6 +1850,16 @@ button {
 @keyframes boot-progress {
 	from { transform: scaleX(0); }
 	to { transform: scaleX(1); }
+}
+
+@keyframes kingdomFogDrift {
+	from { margin-left: -2%; transform: translate3d(calc(var(--journey-progress, 0) * 5vw), calc(var(--journey-progress, 0) * -4vh), 0) scale(1); }
+	to { margin-left: 2%; transform: translate3d(calc(var(--journey-progress, 0) * 5vw), calc((var(--journey-progress, 0) * -4vh) - 3%), 0) scale(1.06); }
+}
+
+@keyframes drone-pulse {
+	0%, 100% { opacity: 0.5; transform: scale(0.8); }
+	50% { opacity: 1; transform: scale(1); }
 }
 
 @media (max-width: 1120px) {
@@ -1810,6 +1914,46 @@ button {
 		font-size: 16px;
 	}
 
+	.ambient-drone {
+		right: 18px;
+		bottom: 12px;
+	}
+
+	.house-journey {
+		height: 320svh;
+	}
+
+	.house-journey__stage {
+		perspective: 800px;
+	}
+
+	.house-journey__plate {
+		inset: -6%;
+		transform: scale(calc(1.08 + (var(--journey-progress, 0) * 0.08)));
+	}
+
+	.house-journey__safety {
+		background: linear-gradient(180deg, rgba(5, 5, 5, 0.58), rgba(5, 5, 5, 0.22) 38%, rgba(5, 5, 5, 0.95));
+	}
+
+	.house-journey__content {
+		align-items: end;
+		padding-bottom: 88px;
+	}
+
+	.house-journey__copy h1 {
+		font-size: clamp(58px, 20vw, 96px);
+	}
+
+	.house-journey__copy > span {
+		margin-top: 17px;
+		font-size: 16px;
+	}
+
+	.house-journey__copy .room-actions .button:nth-child(n + 4) {
+		display: none;
+	}
+
 	.house-header {
 		padding: 0 18px;
 	}
@@ -1819,7 +1963,11 @@ button {
 	}
 
 	.room-hero {
-		min-height: 94svh;
+		min-height: 130svh;
+	}
+
+	.room-hero__stage {
+		height: 100svh;
 	}
 
 	.room-hero__shade,
@@ -1830,7 +1978,7 @@ button {
 	}
 
 	.room-hero__inner {
-		min-height: 94svh;
+		min-height: 100svh;
 		align-items: end;
 		padding: 112px 0 94px;
 	}
@@ -1908,6 +2056,15 @@ button {
 
 	.palette-strip div:last-child {
 		border-bottom: 0;
+	}
+
+	.track-row {
+		grid-template-columns: 36px minmax(0, 1fr);
+		gap: 14px;
+	}
+
+	.track-row audio {
+		grid-column: 1 / -1;
 	}
 
 	.house-map a {
@@ -2039,5 +2196,31 @@ button {
 		animation-iteration-count: 1 !important;
 		scroll-behavior: auto !important;
 		transition-duration: 0.01ms !important;
+	}
+
+	.house-journey {
+		height: 100svh;
+	}
+
+	.house-journey__plate,
+	.house-journey__depth,
+	.house-journey__fog,
+	.house-journey__light,
+	.house-journey__reflection,
+	.house-journey__copy {
+		transform: none !important;
+	}
+
+	.room-hero {
+		min-height: 100svh;
+	}
+
+	.room-hero__media img,
+	.room-hero__depth,
+	.room-hero__light,
+	.room-hero__reflection,
+	.room-hero__copy {
+		transform: none !important;
+		opacity: 1 !important;
 	}
 }
