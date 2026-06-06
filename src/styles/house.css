@@ -59,6 +59,247 @@ body::before {
 	mix-blend-mode: soft-light;
 }
 
+.ambient-drone {
+	position: fixed;
+	right: var(--gutter);
+	bottom: 20px;
+	z-index: 88;
+	display: flex;
+	align-items: center;
+	gap: 9px;
+	padding: 7px 9px;
+	border: 1px solid var(--line);
+	background: rgba(5, 5, 5, 0.7);
+	backdrop-filter: blur(14px);
+}
+
+.ambient-drone button {
+	display: flex;
+	align-items: center;
+	gap: 8px;
+	padding: 0;
+	border: 0;
+	color: var(--muted);
+	background: transparent;
+	cursor: pointer;
+	font-family: var(--mono);
+	font-size: 9px;
+	text-transform: uppercase;
+}
+
+.ambient-drone small {
+	color: var(--faint);
+	font-family: var(--mono);
+	font-size: 8px;
+}
+
+.ambient-drone__signal {
+	width: 8px;
+	height: 8px;
+	border: 1px solid var(--rose);
+	border-radius: 50%;
+}
+
+.ambient-drone.is-playing {
+	border-color: rgba(215, 255, 49, 0.62);
+}
+
+.ambient-drone.is-playing button {
+	color: var(--lime);
+}
+
+.ambient-drone.is-playing .ambient-drone__signal {
+	border-color: var(--lime);
+	background: var(--lime);
+	box-shadow: 0 0 14px rgba(215, 255, 49, 0.66);
+	animation: drone-pulse 2.2s ease-in-out infinite;
+}
+
+.house-journey {
+	position: relative;
+	height: 500svh;
+	background: var(--void);
+}
+
+.house-journey__stage {
+	position: sticky;
+	top: 0;
+	height: 100svh;
+	overflow: hidden;
+	isolation: isolate;
+	perspective: 1200px;
+}
+
+.house-journey__plates,
+.house-journey__plate {
+	position: absolute;
+	inset: 0;
+}
+
+.house-journey__plates {
+	z-index: -7;
+}
+
+.house-journey__plate {
+	opacity: 0;
+	transform:
+		translate3d(calc(var(--journey-progress, 0) * -1.2vw), calc(var(--journey-progress, 0) * -0.7vh), 0)
+		scale(calc(1.04 + (var(--journey-progress, 0) * 0.15)));
+	transition: opacity 780ms var(--ease);
+	will-change: opacity, transform;
+}
+
+.house-journey__plate.is-active {
+	opacity: 1;
+}
+
+.house-journey__plate img {
+	width: 100%;
+	height: 100%;
+	display: block;
+	object-fit: cover;
+	filter: brightness(calc(0.72 + (var(--journey-progress, 0) * 0.1))) contrast(1.08);
+}
+
+.house-journey__depth,
+.house-journey__fog,
+.house-journey__light,
+.house-journey__reflection,
+.house-journey__safety {
+	position: absolute;
+	inset: 0;
+	pointer-events: none;
+}
+
+.house-journey__depth {
+	z-index: -6;
+	background:
+		radial-gradient(circle at 74% 52%, rgba(217, 154, 112, 0.17), transparent 24%),
+		radial-gradient(circle at 20% 72%, rgba(217, 160, 162, 0.1), transparent 31%);
+	transform: translateY(calc(var(--journey-progress, 0) * -3vh));
+}
+
+.house-journey__fog {
+	inset: auto -20% -12%;
+	z-index: -5;
+	height: 48%;
+	opacity: 0.48;
+	filter: blur(26px);
+	background:
+		radial-gradient(ellipse at 20% 60%, rgba(232, 237, 241, 0.11), transparent 42%),
+		radial-gradient(ellipse at 70% 45%, rgba(217, 154, 112, 0.18), transparent 48%);
+	transform:
+		translate3d(calc(var(--journey-progress, 0) * 5vw), calc(var(--journey-progress, 0) * -4vh), 0)
+		scale(calc(1 + (var(--journey-progress, 0) * 0.12)));
+	animation: kingdomFogDrift 12s ease-in-out infinite alternate;
+}
+
+.house-journey__light {
+	z-index: -4;
+	opacity: calc(0.18 + (var(--journey-progress, 0) * 0.2));
+	background: linear-gradient(105deg, transparent 0 36%, rgba(217, 154, 112, 0.16) 48%, transparent 62%);
+	transform: translateX(calc(-18% + (var(--journey-progress, 0) * 36%)));
+	mix-blend-mode: screen;
+}
+
+.house-journey__reflection {
+	inset: auto 0 0;
+	z-index: -3;
+	height: 42%;
+	opacity: 0.38;
+	background:
+		linear-gradient(180deg, transparent, rgba(217, 154, 112, 0.13)),
+		repeating-linear-gradient(90deg, transparent 0 120px, rgba(217, 154, 112, 0.05) 121px, transparent 123px);
+	transform: translateY(calc(var(--journey-progress, 0) * 4vh)) scaleY(calc(1 + (var(--journey-progress, 0) * 0.18)));
+}
+
+.house-journey__safety {
+	z-index: -2;
+	background:
+		linear-gradient(90deg, rgba(5, 5, 5, 0.91), rgba(5, 5, 5, 0.3) 52%, rgba(5, 5, 5, 0.7)),
+		linear-gradient(180deg, rgba(5, 5, 5, 0.64), transparent 42%, rgba(5, 5, 5, 0.9));
+}
+
+.house-journey__content {
+	width: min(var(--page-width), calc(100vw - (var(--gutter) * 2)));
+	height: 100svh;
+	display: grid;
+	align-items: center;
+	margin-inline: auto;
+	padding-top: var(--header-height);
+}
+
+.house-journey__copy {
+	position: absolute;
+	width: min(760px, calc(100vw - (var(--gutter) * 2)));
+	opacity: 0;
+	transform: translateY(26px) scale(0.98);
+	transition: opacity 620ms var(--ease), transform 760ms var(--ease);
+	pointer-events: none;
+}
+
+.house-journey__copy.is-active {
+	opacity: 1;
+	transform: translateY(calc(var(--journey-progress, 0) * -18px)) scale(calc(1 - (var(--journey-progress, 0) * 0.02)));
+	pointer-events: auto;
+}
+
+.house-journey__copy > p {
+	margin: 0 0 12px;
+	color: var(--lime);
+	font-family: var(--mono);
+	font-size: 10px;
+	font-weight: 700;
+	text-transform: uppercase;
+}
+
+.house-journey__copy h1 {
+	margin: 0;
+	font-family: var(--display);
+	font-size: clamp(72px, 13vw, 184px);
+	font-weight: 540;
+	line-height: 0.82;
+	text-transform: uppercase;
+}
+
+.house-journey__copy > span {
+	display: block;
+	max-width: 630px;
+	margin-top: 24px;
+	color: var(--muted);
+	font-size: clamp(17px, 1.35vw, 22px);
+}
+
+.house-journey__meter {
+	position: absolute;
+	left: var(--gutter);
+	right: var(--gutter);
+	bottom: 20px;
+	display: grid;
+	grid-template-columns: auto 1fr auto;
+	align-items: center;
+	gap: 14px;
+	color: var(--muted);
+	font-family: var(--mono);
+	font-size: 9px;
+	text-transform: uppercase;
+}
+
+.house-journey__meter i {
+	height: 1px;
+	background: var(--line);
+	overflow: hidden;
+}
+
+.house-journey__meter b {
+	display: block;
+	width: 100%;
+	height: 100%;
+	background: var(--rose);
+	transform: scaleX(0);
+	transform-origin: left;
+}
+
 body,
 button,
 a,
