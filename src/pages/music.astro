@@ -3,7 +3,7 @@ import HouseLayout from "../layouts/HouseLayout.astro";
 import RoomHero from "../components/RoomHero.astro";
 import SectionHeading from "../components/SectionHeading.astro";
 import ContactBand from "../components/ContactBand.astro";
-import { backgrounds } from "../data/house";
+import { backgrounds, musicTracks } from "../data/house";
 ---
 
 <HouseLayout
@@ -79,6 +79,31 @@ import { backgrounds } from "../data/house";
 		</div>
 	</section>
 
+	<section class="content-section content-section--soft" id="music-catalog">
+		<div class="section-inner">
+			<SectionHeading
+				label="Music Catalog"
+				title="More From KingShadP"
+				copy="Seven additional records are now housed here with direct playback. Starting one track stops the previous one."
+			/>
+			<div class="track-list" data-track-list>
+				{musicTracks.map((track, index) => (
+					<article class="track-row">
+						<div class="track-row__number">{String(index + 1).padStart(2, "0")}</div>
+						<div class="track-row__title">
+							<small>{track.type}</small>
+							<h3>{track.title}</h3>
+							{track.credit && <p>{track.credit}</p>}
+						</div>
+						<audio controls preload="none">
+							<source src={track.file} type="audio/mpeg" />
+						</audio>
+					</article>
+				))}
+			</div>
+		</div>
+	</section>
+
 	<section class="content-section content-section--soft">
 		<div class="section-inner feature-split">
 			<div class="feature-media">
@@ -119,3 +144,14 @@ import { backgrounds } from "../data/house";
 
 	<ContactBand title="For music, booking, or production conversations." />
 </HouseLayout>
+
+<script>
+	const players = Array.from(document.querySelectorAll<HTMLAudioElement>("[data-track-list] audio"));
+	players.forEach((player) => {
+		player.addEventListener("play", () => {
+			players.forEach((other) => {
+				if (other !== player) other.pause();
+			});
+		});
+	});
+</script>

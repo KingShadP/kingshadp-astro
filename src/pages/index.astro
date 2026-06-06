@@ -1,6 +1,6 @@
 ---
 import HouseLayout from "../layouts/HouseLayout.astro";
-import RoomHero from "../components/RoomHero.astro";
+import HouseJourney from "../components/HouseJourney.astro";
 import SectionHeading from "../components/SectionHeading.astro";
 import ContactBand from "../components/ContactBand.astro";
 import {
@@ -32,20 +32,7 @@ const featuredOracle = oracleEntries.find((entry) => entry.featured) ?? oracleEn
 		</div>
 	</div>
 
-	<RoomHero
-		humanTitle="The Official Creative House"
-		kicker="Music first. The world follows."
-		title="KingShadP"
-		copy="Music. Image. Story. World. This is the official home for the releases, visual work, writing, symbols, objects, and active record of KingShadP."
-		background={backgrounds.home}
-		actions={[
-			{ label: "Listen", href: "#featured-music", primary: true },
-			{ label: "View Visuals", href: "/visuals" },
-			{ label: "Read Oracle", href: "/oracle" },
-			{ label: "Contact", href: "/contact" },
-		]}
-		nextLabel="See what exists now"
-	/>
+	<HouseJourney />
 
 	<section class="content-section" id="room-content">
 		<div class="section-inner">

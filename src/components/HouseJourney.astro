@@ -1,0 +1,91 @@
+---
+import { backgrounds } from "../data/house";
+
+const rooms = [
+	{ label: "The House", title: "KingShadP", copy: "Music. Image. Story. World. The official creative house of KingShadP.", background: backgrounds.home },
+	{ label: "Sonic Room", title: "Music", copy: "The sound is the center. Releases, lyrics, demos, and the work behind the record.", background: backgrounds.music },
+	{ label: "Visual Room", title: "Visuals", copy: "Campaigns, editorial work, garments, symbols, objects, and motion.", background: backgrounds.visuals },
+	{ label: "Oracle", title: "Writing", copy: "Statements, lyrics, fragments, documents, and the internal record.", background: backgrounds.oracle },
+	{ label: "The World", title: "Symbols", copy: "Giragon, SP Crest, signature, meanings, and the rules of the house.", background: backgrounds.world },
+];
+---
+
+<section class="house-journey" data-house-journey>
+	<div class="house-journey__stage">
+		<div class="house-journey__plates" aria-hidden="true">
+			{rooms.map((room, index) => {
+				const baseName = room.background.split("/").at(-1);
+				const mobileBase = `/images/backgrounds/mobile/${baseName}-mobile`;
+				return (
+					<picture class:list={["house-journey__plate", { "is-active": index === 0 }]} data-journey-plate={index}>
+						<source media="(max-width: 767px)" type="image/avif" srcset={`${mobileBase}.avif`} />
+						<source media="(max-width: 767px)" type="image/webp" srcset={`${mobileBase}.webp`} />
+						<source type="image/avif" srcset={`${room.background}.avif`} />
+						<img src={`${room.background}.webp`} alt="" loading={index === 0 ? "eager" : "lazy"} />
+					</picture>
+				);
+			})}
+		</div>
+		<div class="house-journey__depth" aria-hidden="true"></div>
+		<div class="house-journey__fog" aria-hidden="true"></div>
+		<div class="house-journey__light" aria-hidden="true"></div>
+		<div class="house-journey__reflection" aria-hidden="true"></div>
+		<div class="house-journey__safety" aria-hidden="true"></div>
+
+		<div class="house-journey__content">
+			{rooms.map((room, index) => (
+				<div class:list={["house-journey__copy", { "is-active": index === 0 }]} data-journey-copy={index}>
+					<p>{String(index + 1).padStart(2, "0")} / {room.label}</p>
+					<h1>{room.title}</h1>
+					<span>{room.copy}</span>
+					{index === 0 && (
+						<div class="room-actions">
+							<a class="button button--primary" href="/music">Listen</a>
+							<a class="button" href="/visuals">View Visuals</a>
+							<a class="button" href="/oracle">Read Oracle</a>
+							<a class="button" href="/contact">Contact</a>
+						</div>
+					)}
+				</div>
+			))}
+		</div>
+
+		<div class="house-journey__meter" aria-label="House entry progress">
+			<span>Enter the House</span>
+			<i><b data-journey-meter></b></i>
+			<span data-journey-count>01 / 05</span>
+		</div>
+	</div>
+</section>
+
+<script>
+	document.querySelectorAll<HTMLElement>("[data-house-journey]").forEach((journey) => {
+		const plates = Array.from(journey.querySelectorAll<HTMLElement>("[data-journey-plate]"));
+		const copies = Array.from(journey.querySelectorAll<HTMLElement>("[data-journey-copy]"));
+		const meter = journey.querySelector<HTMLElement>("[data-journey-meter]");
+		const count = journey.querySelector<HTMLElement>("[data-journey-count]");
+		const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+		let frame = 0;
+
+		const update = () => {
+			const rect = journey.getBoundingClientRect();
+			const travel = Math.max(1, journey.offsetHeight - window.innerHeight);
+			const progress = reduced ? 0 : Math.min(1, Math.max(0, -rect.top / travel));
+			const roomIndex = Math.min(plates.length - 1, Math.floor(progress * plates.length));
+			journey.style.setProperty("--journey-progress", progress.toFixed(4));
+			plates.forEach((plate, index) => plate.classList.toggle("is-active", index === roomIndex));
+			copies.forEach((copy, index) => copy.classList.toggle("is-active", index === roomIndex));
+			if (meter) meter.style.transform = `scaleX(${progress})`;
+			if (count) count.textContent = `${String(roomIndex + 1).padStart(2, "0")} / 05`;
+		};
+
+		const requestUpdate = () => {
+			cancelAnimationFrame(frame);
+			frame = requestAnimationFrame(update);
+		};
+
+		update();
+		window.addEventListener("scroll", requestUpdate, { passive: true });
+		window.addEventListener("resize", requestUpdate);
+	});
+</script>
