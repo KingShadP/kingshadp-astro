@@ -11,7 +11,7 @@ const currentPath = Astro.url.pathname;
 	</a>
 
 	<nav class="desktop-nav" aria-label="Primary navigation">
-		{houseRoutes.map((item) => (
+		{houseRoutes.filter((item) => item.href !== "/contact").map((item) => (
 			<a href={item.href} aria-current={currentPath === item.href ? "page" : undefined}>{item.label}</a>
 		))}
 	</nav>

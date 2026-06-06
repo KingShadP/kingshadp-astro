@@ -456,9 +456,13 @@ button {
 	display: grid;
 	grid-template-rows: auto 1fr auto;
 	padding: 24px;
-	background:
-		linear-gradient(180deg, rgba(5, 5, 5, 0.68), var(--void)),
-		url("/images/backgrounds/mobile/bg-contact-mobile.webp") center / cover;
+	overflow-y: auto;
+	background-color: #050505;
+	background-image:
+		linear-gradient(180deg, rgba(5, 5, 5, 0.98), rgba(5, 5, 5, 0.96)),
+		url("/images/backgrounds/mobile/bg-contact-mobile.webp");
+	background-position: center;
+	background-size: cover;
 }
 
 .drawer-top {
@@ -2021,8 +2025,35 @@ button {
 		display: none;
 	}
 
+	.house-drawer {
+		height: 100dvh;
+		grid-template-rows: auto auto auto;
+		align-content: start;
+		gap: 14px;
+		padding: 18px 18px max(28px, env(safe-area-inset-bottom));
+	}
+
+	.house-drawer nav {
+		align-content: start;
+		padding-block: 4px;
+	}
+
+	.house-drawer nav a {
+		padding-block: 7px;
+		font-size: clamp(27px, 8vw, 38px);
+		line-height: 0.95;
+	}
+
+	.drawer-email {
+		padding-top: 12px;
+	}
+
 	.room-peek {
-		bottom: 12px;
+		bottom: 60px;
+	}
+
+	.house-journey__meter {
+		bottom: 60px;
 	}
 
 	.content-section {

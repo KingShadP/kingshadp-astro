@@ -8,6 +8,9 @@ import cloudflare from "@astrojs/cloudflare";
 // https://astro.build/config
 export default defineConfig({
 	site: "https://www.kshadp.com",
+	devToolbar: {
+		enabled: false,
+	},
 	integrations: [mdx(), sitemap()],
 	adapter: cloudflare({
 		platformProxy: {
